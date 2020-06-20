@@ -11,7 +11,8 @@ on:
 
 jobs:
   build:
-
+    env: 
+      GH_PAT: ${{secrets.GH_PAT}}
     runs-on: ubuntu-latest
 
     strategy:
