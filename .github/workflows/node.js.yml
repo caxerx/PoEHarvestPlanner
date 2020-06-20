@@ -34,5 +34,6 @@ jobs:
         keep_history: true
         allow_empty_commit: true
         build_dir: dist
-        author: webmaster@caxerx.com
+        author: caxerx <webmaster@caxerx.com>
+        committer: caxerx <webmaster@caxerx.com>
         fqdn: harvest.iw.gy
