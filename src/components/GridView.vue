@@ -1,5 +1,5 @@
 <template>
-  <div @mousedown="selectStart" @mouseup="selectStop">
+  <div @mousedown="selectStart" @mouseup="selectStop" @contextmenu.prevent>
     <template v-for="i in row">
       <div
         v-for="j in column"
@@ -24,7 +24,7 @@ interface CellPlacement {
   x: number;
   y: number;
   color?: number;
-  text?: "P" | "C" | "S" | "D" | "1" | "2" | "3";
+  text?: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4";
 }
 
 export default Vue.extend({
@@ -56,8 +56,13 @@ export default Vue.extend({
         [-1, -1],
         [-1, -1]
       ],
+      linkingCell: [
+        [-1, -1],
+        [-1, -1]
+      ],
       cellPlacement: [] as CellPlacement[],
       selectingMode: false,
+      pylonLinkingMode: false,
       lastStep: [] as string[],
       nextStep: [] as string[]
     };
@@ -93,6 +98,9 @@ export default Vue.extend({
         this.removePlacement(i[0], i[1]);
       });
     },
+    clearAllPlacement() {
+      this.$set(this, "cellPlacement", []);
+    },
     findPlacement(i: number, j: number) {
       return this.cellPlacement.find(o => o.x == i && o.y == j);
     },
@@ -115,7 +123,7 @@ export default Vue.extend({
       this.cellPlacement.push(placement);
     },
     setPlacement(
-      type: "P" | "C" | "S" | "D" | "1" | "2" | "3",
+      type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4",
       color?: number
     ) {
       this.generateSelectedCell().forEach(i => {
@@ -134,15 +142,29 @@ export default Vue.extend({
           JSON.stringify(this.selectedCell[1])
       );
     },
-    async selectStart() {
-      this.$set(this.selectingCell, 0, this.hoveringCell);
-      this.$set(this.selectingCell, 1, this.hoveringCell);
-      this.selectingMode = true;
+    async selectStart(evt: any) {
+      if (evt.button == 0) {
+        this.$set(this.selectingCell, 0, this.hoveringCell);
+        this.$set(this.selectingCell, 1, this.hoveringCell);
+        this.selectingMode = true;
+      }
+      if (evt.button == 2) {
+        this.$set(this.selectingCell, 0, this.hoveringCell);
+        this.$set(this.selectingCell, 1, this.hoveringCell);
+        if (this.findPlacement(this.hoveringCell[0], this.hoveringCell[1])) {
+          this.pylonLinkingMode = true;
+        }
+      }
     },
-    async selectStop() {
-      this.$set(this.selectedCell, 0, this.selectingCell[0]);
-      this.$set(this.selectedCell, 1, this.selectingCell[1]);
-      this.selectingMode = false;
+    async selectStop(evt: any) {
+      if (evt.button == 0) {
+        this.$set(this.selectedCell, 0, this.selectingCell[0]);
+        this.$set(this.selectedCell, 1, this.selectingCell[1]);
+        this.selectingMode = false;
+      }
+      if (evt.button == 2) {
+        this.pylonLinkingMode = false;
+      }
     },
     generateSelectedCell() {
       let x0 = this.selectedCell[0][0];

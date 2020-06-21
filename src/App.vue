@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app clipped-right>
+    <v-app-bar app clipped>
       <v-btn @click="showImportDialog">
         <v-icon>
           mdi-import
@@ -27,6 +27,8 @@
         </v-icon>
         Redo
       </v-btn>
+      <v-spacer />
+      <v-btn icon @click="githubRepo"><v-icon>mdi-github-circle</v-icon></v-btn>
     </v-app-bar>
 
     <v-dialog v-model="isShowExportDialog">
@@ -60,47 +62,82 @@
     </v-dialog>
 
     <v-main style="padding-left:20px; padding-top:90px">
-      <GridView
-        @selectedStyle="selectedStyleChange"
-        @placementStyle="placementStyleChange"
-        @collectorRange="collectorRangeChange"
-        @hoveringRange="hoveringRangeChange"
-        ref="grid"
-      />
-      <div class="selected-cell-range" :style="selectedCellStyle"></div>
-      <div
-        v-for="(i, index) in placementCellStyle"
-        class="cell-placement"
-        :style="i"
-        :key="`placement-${index}`"
-      >
-        <div>
-          {{ i._text }}
-        </div>
-      </div>
-      <div
-        v-for="(i, index) in collectorRangeStyle"
-        :class="`collector-range seed-${i._seed}`"
-        :style="i"
-        :key="`collector-${index}`"
-      ></div>
-      <div
-        v-if="hoveringCellStyle"
-        class="hovering-range"
-        :style="hoveringCellStyle"
-      ></div>
+      <v-row>
+        <v-col>
+          <GridView
+            @selectedStyle="selectedStyleChange"
+            @placementStyle="placementStyleChange"
+            @collectorRange="collectorRangeChange"
+            @hoveringRange="hoveringRangeChange"
+            ref="grid"
+          />
+          <div class="selected-cell-range" :style="selectedCellStyle"></div>
+          <div
+            v-for="(i, index) in placementCellStyle"
+            class="cell-placement"
+            :style="i"
+            :key="`placement-${index}`"
+          >
+            <div>
+              {{ i._text }}
+            </div>
+          </div>
+          <div
+            v-for="(i, index) in collectorRangeStyle"
+            :class="`collector-range seed-${i._seed}`"
+            :style="i"
+            :key="`collector-${index}`"
+          ></div>
+          <div
+            v-if="hoveringCellStyle"
+            class="hovering-range"
+            :style="hoveringCellStyle"
+          ></div>
+          <!-- <svg
+            width="798px"
+            height="798px"
+            style="position:absolute; top:0; left:0;z-index:5;pointer-events: none;"
+          >
+            <line
+              x1="0"
+              y1="0"
+              x2="200"
+              y2="200"
+              style="stroke:rgb(255,0,0);stroke-width:2"
+            />
+          </svg> -->
+        </v-col>
+        <v-col> </v-col>
+      </v-row>
     </v-main>
     <v-navigation-drawer app right permanent>
       <v-list>
-        <v-list-item @click="setPlacement('P')">
-          <v-list-item-title>Pylon</v-list-item-title>
-        </v-list-item>
+        <v-list-group active-class="list-active" sub-group>
+          <template v-slot:activator>
+            <v-list-item-title>Pylon</v-list-item-title>
+          </template>
+          <v-list-item @click="setPlacement('P', 0)">
+            <v-list-item-title class="purple--text text--lighten-2">
+              Wild Pylon
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="setPlacement('P', 1)">
+            <v-list-item-title class="yellow--text text--darken-4">
+              Vivid Pylon
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="setPlacement('P', 2)">
+            <v-list-item-title class="blue--text">
+              Primal Pylon
+            </v-list-item-title>
+          </v-list-item>
+        </v-list-group>
         <v-list-group active-class="list-active" sub-group>
           <template v-slot:activator>
             <v-list-item-title>Collector</v-list-item-title>
           </template>
           <v-list-item @click="setPlacement('C', 0)">
-            <v-list-item-title class="purple--text">
+            <v-list-item-title class="purple--text text--lighten-2">
               Wild Collector
             </v-list-item-title>
           </v-list-item>
@@ -120,7 +157,7 @@
             <v-list-item-title>Storage</v-list-item-title>
           </template>
           <v-list-item @click="setPlacement('S', 0)">
-            <v-list-item-title class="purple--text">
+            <v-list-item-title class="purple--text text--lighten-2">
               Wild Storage
             </v-list-item-title>
           </v-list-item>
@@ -140,7 +177,7 @@
             <v-list-item-title>Disperser</v-list-item-title>
           </template>
           <v-list-item @click="setPlacement('D', 0)">
-            <v-list-item-title class="purple--text">
+            <v-list-item-title class="purple--text text--lighten-2">
               Wild Disperser
             </v-list-item-title>
           </v-list-item>
@@ -166,7 +203,7 @@
               <v-list-item-title>T1</v-list-item-title>
             </template>
             <v-list-item @click="setPlacement('1', 0)">
-              <v-list-item-title class="purple--text">
+              <v-list-item-title class="purple--text text--lighten-2">
                 Wild T1 Seed
               </v-list-item-title>
             </v-list-item>
@@ -187,7 +224,7 @@
               <v-list-item-title>T2</v-list-item-title>
             </template>
             <v-list-item @click="setPlacement('2', 0)">
-              <v-list-item-title class="purple--text">
+              <v-list-item-title class="purple--text text--lighten-2">
                 Wild T2 Seed
               </v-list-item-title>
             </v-list-item>
@@ -207,7 +244,7 @@
               <v-list-item-title>T3</v-list-item-title>
             </template>
             <v-list-item @click="setPlacement('3', 0)">
-              <v-list-item-title class="purple--text">
+              <v-list-item-title class="purple--text text--lighten-2">
                 Wild T3 Seed
               </v-list-item-title>
             </v-list-item>
@@ -222,10 +259,42 @@
               </v-list-item-title>
             </v-list-item>
           </v-list-group>
+          <v-list-group active-class="list-active" sub-group>
+            <template v-slot:activator>
+              <v-list-item-title>T4</v-list-item-title>
+            </template>
+            <v-list-item @click="setPlacement('4', 0)">
+              <v-list-item-title class="purple--text text--lighten-2">
+                Wild T4 Seed
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="setPlacement('4', 1)">
+              <v-list-item-title class="yellow--text text--darken-4">
+                Vivid T4 Seed
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="setPlacement('4', 2)">
+              <v-list-item-title class="blue--text">
+                Primal T4 Seed
+              </v-list-item-title>
+            </v-list-item>
+          </v-list-group>
         </v-list-group>
         <v-list-item @click="clearPlacement">
-          Clear
+          Clear Selected
         </v-list-item>
+        <v-list-item @click="clearAllPlacement">
+          Clear All
+        </v-list-item>
+        <!-- <v-list-item>
+          <v-switch label="Display Collector Range"></v-switch>
+        </v-list-item>
+        <v-list-item>
+          <v-switch label="Display Disperser Range"></v-switch>
+        </v-list-item>
+        <v-list-item>
+          <v-switch label="Display Pylon Link"></v-switch>
+        </v-list-item> -->
       </v-list>
     </v-navigation-drawer>
   </v-app>
@@ -245,6 +314,9 @@ export default Vue.extend({
     this.importLayout();
   },
   methods: {
+    githubRepo() {
+      location.href = "https://github.com/caxerx/PoEHarvestPlanner";
+    },
     undo() {
       this.layoutText = (this.$refs.grid as any).undoPlacement();
     },
@@ -281,13 +353,16 @@ export default Vue.extend({
       this.$set(this, "hoveringCellStyle", s);
     },
     setPlacement(
-      type: "P" | "C" | "S" | "D" | "1" | "2" | "3",
+      type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4",
       color?: number
     ) {
       (this.$refs.grid as any).setPlacement(type, color);
     },
     clearPlacement() {
       (this.$refs.grid as any).clearPlacement();
+    },
+    clearAllPlacement() {
+      (this.$refs.grid as any).clearAllPlacement();
     }
   },
   data: () => ({
@@ -309,8 +384,8 @@ export default Vue.extend({
 </script>
 <style>
 .hovering-range {
-  border: 2px solid black;
-  box-shadow: 0px 0px 4px black;
+  border: 2px solid grey;
+  box-shadow: 0px 0px 4px grey;
   position: absolute;
 }
 
@@ -322,7 +397,7 @@ export default Vue.extend({
   position: absolute;
 }
 .list-active {
-  color: black !important;
+  color: white !important;
 }
 
 .cell-placement {
