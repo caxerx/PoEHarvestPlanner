@@ -1,13 +1,20 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import Main from "@/Main.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/:data",
+    path: "/:planData",
     name: "Home",
+    component: Main,
     props: true,
+  },
+  {
+    path: "/",
+    name: "Home",
+    component: Main,
   },
 ];
 

@@ -67,7 +67,7 @@ export default Vue.extend({
       }
       if (evt.button == 2) {
         this.$set(this.connectionPoint, 0, this.hoveringCell);
-        this.$set(this.connectionPoint, 1, null);
+        this.$set(this.connectionPoint, 1, this.hoveringCell);
         this.connectionMode = true;
       }
     },
@@ -97,6 +97,7 @@ export default Vue.extend({
           [1, 1],
           [this.row, this.column]
         ]);
+        this.$emit("update:selection", this.selectingArea);
       }
     },
     cellStyle(i: number, j: number) {
@@ -110,6 +111,9 @@ export default Vue.extend({
     }
   },
   watch: {
+    hoveringCell(val) {
+      this.$emit("update:hovering", val);
+    },
     value(val) {
       this.$set(this, "selectingArea", val);
     },

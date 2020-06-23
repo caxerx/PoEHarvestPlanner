@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="elementStyle">
     <template v-for="i in row">
       <div
         v-for="j in column"
@@ -14,7 +14,10 @@
 <script lang="ts">
 import Vue from "vue";
 import Layout from "@/layout/harvest-layout.json";
-import { calculateCellPosition } from "@/utils/cell-calc";
+import {
+  calculateCellPosition,
+  calculateAreaPixelSize
+} from "@/utils/cell-calc";
 
 export default Vue.extend({
   name: "GridDisplay",
@@ -28,6 +31,21 @@ export default Vue.extend({
       cellData: Layout,
       color: [null, "green", "pink", "blue", "brown"]
     };
+  },
+  computed: {
+    elementStyle() {
+      const size = calculateAreaPixelSize(
+        [
+          [1, 1],
+          [this.row, this.column]
+        ],
+        this.size
+      );
+      return {
+        height: `${size[0]}px`,
+        width: `${size[1]}px`
+      };
+    }
   },
   methods: {
     cellStyle(i: number, j: number) {

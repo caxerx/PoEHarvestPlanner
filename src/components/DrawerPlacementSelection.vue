@@ -10,8 +10,12 @@
       </v-subheader>
       <v-row class="mx-2">
         <v-col v-for="(i, iIndex) in g.item" :key="`gi-${iIndex}`">
-          <v-btn :color="i.color" height="60">
-            <v-img :src="i.image" @click="placeItem(g.type, i.color)"></v-img>
+          <v-btn
+            :color="i.color"
+            height="60"
+            @click="placeItem(g.type, i.color)"
+          >
+            <v-img :src="i.image"></v-img>
           </v-btn>
         </v-col>
       </v-row>

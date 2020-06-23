@@ -54,11 +54,13 @@ export default Vue.extend({
         this.size
       );
       return {
-        height: `${size[0]}`,
-        width: `${size[1]}`,
+        height: `${size[0]}px`,
+        width: `${size[1]}px`,
         "pointer-events": "none",
         "user-select": "none",
         "z-index": 5,
+        top: 0,
+        left: 0,
         position: "absolute"
       };
     }

@@ -4,3 +4,8 @@ export interface CellPlacement {
   color?: number;
   text?: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "connection";
 }
+export interface InferenceArea {
+  topLeft: number[];
+  size: number;
+  color?: number;
+}
