@@ -37,6 +37,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      seed: ["1", "2", "3", "4"],
       seedColor: [
         "156, 39, 176",
         "245, 127, 23",

@@ -13,6 +13,7 @@
           <v-btn
             :color="i.color"
             height="60"
+            width="60"
             @click="placeItem(g.type, i.color)"
           >
             <v-img :src="i.image"></v-img>

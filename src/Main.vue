@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app width="350" style="user-select: none">
+    <v-navigation-drawer app width="300" style="user-select: none" permanent>
       <DrawerPlacementSelection @place="placeItem"></DrawerPlacementSelection>
     </v-navigation-drawer>
     <v-app-bar app style="z-index: 100">
@@ -173,9 +173,12 @@
             <GridConnection
               :connecting="connectingPoints"
               :connections="pylonConnections"
+              :select-conntect="selectedOrHoveringConnection"
             ></GridConnection>
             <PlacementDisplay
               :placement="cellPlacementDisplay"
+              :is-connecting="isConnecting"
+              :link-point="selectedOrHoveringPlacement"
             ></PlacementDisplay>
           </div>
         </v-col>
@@ -284,6 +287,7 @@ import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import { CellPlacement } from "@/types/CellPlacement";
 import { generateSelectedCell } from "@/utils/cell-calc";
+import { isSeed } from "@/utils/placement-util";
 import { InferenceArea } from "./types/CellPlacement";
 import Layout from "@/layout/harvest-layout.json";
 import { getShare, fromShare } from "./utils/link-share";
@@ -363,7 +367,8 @@ export default Vue.extend({
         alwaysShowDisperserArea: false
       },
       isUndo: false,
-      isRedo: false
+      isRedo: false,
+      seed: ["1", "2", "3", "4"]
     };
   },
   methods: {
@@ -517,7 +522,22 @@ export default Vue.extend({
     findPlacement(i: number, j: number): CellPlacement | undefined {
       return this.cellPlacement.find(o => o.x == i && o.y == j);
     },
-    findPylonConnection(pylon: CellPlacement) {
+    findPlacementFromConnection(connection: CellPlacement) {
+      if (
+        !connection ||
+        connection.text != "connection" ||
+        typeof connection.x == "number" ||
+        typeof connection.y == "number"
+      ) {
+        return [];
+      }
+      return [
+        this.findPlacement(connection.x[0], connection.y[0]),
+        this.findPlacement(connection.x[1], connection.y[1])
+      ];
+    },
+    findPylonConnection(pylon: CellPlacement | undefined) {
+      if (!pylon) return [];
       return this.cellPlacement.filter(
         p =>
           p.text == "connection" &&
@@ -545,9 +565,13 @@ export default Vue.extend({
       );
     },
     addConnection(p1: CellPlacement, p2: CellPlacement) {
-      if (this.findConnection(p1, p2)) {
+      if (isSeed(p1) || isSeed(p2)) {
         return;
       }
+      if (p1.text)
+        if (this.findConnection(p1, p2)) {
+          return;
+        }
       if (p1 == p2) {
         return;
       }
@@ -601,6 +625,70 @@ export default Vue.extend({
     }
   },
   computed: {
+    selectedOrHoveringConnection() {
+      let placement: CellPlacement[] = [];
+      if (this.isSingleSelection()) {
+        const selectPlacement = this.findPlacement(
+          this.selection[0][0],
+          this.selection[0][1]
+        );
+        placement.push(...this.findPylonConnection(selectPlacement));
+      }
+
+      const hoverPlacement = this.findPlacement(
+        this.hoveringCell[0],
+        this.hoveringCell[1]
+      );
+
+      if (hoverPlacement) {
+        placement.push(...this.findPylonConnection(hoverPlacement));
+      }
+
+      placement = placement.filter((f, i) => placement.indexOf(f) == i);
+      return placement;
+    },
+    selectedOrHoveringPlacement() {
+      let placement: CellPlacement[] = [];
+      if (this.isSingleSelection()) {
+        const selectPlacement = this.findPlacement(
+          this.selection[0][0],
+          this.selection[0][1]
+        );
+        if (selectPlacement) {
+          placement.push(selectPlacement);
+        }
+
+        this.findPylonConnection(selectPlacement).forEach(con => {
+          this.findPlacementFromConnection(con).forEach(e => {
+            if (e) {
+              placement.push(e);
+            }
+          });
+        });
+      }
+
+      const hoverPlacement = this.findPlacement(
+        this.hoveringCell[0],
+        this.hoveringCell[1]
+      );
+      if (hoverPlacement) {
+        placement.push(hoverPlacement);
+
+        this.findPylonConnection(hoverPlacement).forEach(con => {
+          this.findPlacementFromConnection(con).forEach(e => {
+            if (e) {
+              placement.push(e);
+            }
+          });
+        });
+      }
+
+      placement = placement.filter((f, i) => placement.indexOf(f) == i);
+      return placement;
+    },
+    isConnecting(): boolean {
+      return !!this.connectingPoints[0];
+    },
     stringifyCellPlacement(): string {
       return JSON.stringify(this.cellPlacement);
     },
