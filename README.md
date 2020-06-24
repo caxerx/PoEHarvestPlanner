@@ -7,6 +7,7 @@ Try it out on https://harvest.iw.gy/
 - Plan Library
 - Resource Count
 - Element Move / Copy / Cut / Paste
+- Keyboard Shortcut (Arrow Key, Set element with keyboard)
 
 # UI Improvement
 - Configuration for area display
