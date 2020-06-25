@@ -260,7 +260,7 @@
             Alt : Change Selected Color
           </v-row>
           <v-row>
-            P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
+            P / D / S / C / H / 1 / 2 / 3 / 4 : Place Element to Selected Area
           </v-row>
         </v-card-text>
       </v-card>
@@ -509,7 +509,7 @@
               Alt : Change Selected Color
             </v-subheader>
             <v-subheader>
-              P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
+              P / D / S / C / H / 1 / 2 / 3 / 4 : Place Element to Selected Area
             </v-subheader>
           </div>
         </v-col>
