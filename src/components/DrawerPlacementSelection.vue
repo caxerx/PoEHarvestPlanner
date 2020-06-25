@@ -28,10 +28,17 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "DrawerPlacementSelection",
+  props: {
+    disablePlacementShortcout: {
+      default: false
+    }
+  },
   methods: {
     keyboardListener(e: KeyboardEvent) {
-      //p80 d68 s83 c67 1:49 2:50 3:51 4:52
-      if (e.keyCode == 16) {
+      if (this.disablePlacementShortcout) {
+        return;
+      }
+      if (e.keyCode == 18) {
         e.preventDefault();
         this.selectedColor = (this.selectedColor + 1) % 3;
         return;

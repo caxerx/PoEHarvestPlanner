@@ -1,7 +1,10 @@
 <template>
   <v-app>
     <v-navigation-drawer app width="300" style="user-select: none" permanent>
-      <DrawerPlacementSelection @place="placeItem"></DrawerPlacementSelection>
+      <DrawerPlacementSelection
+        @place="placeItem"
+        :disablePlacementShortcout="disableShortcut"
+      ></DrawerPlacementSelection>
     </v-navigation-drawer>
     <v-app-bar app style="z-index: 100">
       <v-btn @click="undo" :disabled="lastStep.length <= 0">
@@ -37,10 +40,13 @@
       >
       <v-btn icon @click="sharePlan"><v-icon>mdi-share-variant</v-icon></v-btn>
       <v-btn icon @click="showSettingDialog = true"
-        ><v-icon>mdi-settings</v-icon></v-btn
+        ><v-icon>mdi-cog</v-icon></v-btn
+      >
+      <v-btn icon @click="showLibraryDialog = true"
+        ><v-icon>mdi-bookshelf</v-icon></v-btn
       >
       <v-btn icon href="https://github.com/caxerx/PoEHarvestPlanner"
-        ><v-icon>mdi-github-circle</v-icon></v-btn
+        ><v-icon>mdi-github</v-icon></v-btn
       >
     </v-app-bar>
 
@@ -65,7 +71,152 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-dialog v-model="showImportDialog">
+    <v-dialog v-model="showConfirmDialog" max-width="300">
+      <v-card>
+        <v-card-title>
+          {{ confirmMode == 0 ? "Replace Profile" : "Delete Profile" }}
+          <v-spacer></v-spacer>
+        </v-card-title>
+        <v-card-text>
+          Are you sure to {{ confirmMode == 0 ? "replace" : "delete" }} the
+          profile?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="showConfirmDialog = false">
+            No
+          </v-btn>
+          <v-btn @click="confirmProfile()" color="primary">
+            Yes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showNamingDialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          {{ namingMode == 0 ? "Rename Profile" : "Create Profile" }}
+          <v-spacer></v-spacer>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            hide-details
+            v-model="profileName"
+            outlined
+            label="Profile Name"
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="saveProfile">
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="showLibraryDialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          Profile Library
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openCreateProfileDialog()"
+                ><v-icon>mdi-content-save</v-icon></v-btn
+              >
+            </template>
+            <span>Save current plan</span>
+          </v-tooltip>
+        </v-card-title>
+        <v-card-text>
+          <v-subheader v-if="profileLibrary.length == 0">
+            No Saved Profile
+          </v-subheader>
+          <v-list dense v-else>
+            <v-list-item
+              v-for="(l, lIndex) in profileLibrary"
+              :key="`profile-${lIndex}`"
+            >
+              <v-list-item-content>
+                <v-list-item-title
+                  >{{ l.name }}
+                  <a class="ml-1" @click="openRenameProfileDialog(lIndex)"
+                    >Rename</a
+                  ></v-list-item-title
+                >
+                <v-list-item-subtitle>{{ l.time }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="loadSetup(l.content)"
+                          ><v-icon>mdi-folder-open</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Load</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="showReplaceConfirm(lIndex)"
+                          ><v-icon>mdi-file-replace</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Replace with current setup</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          @click="sharePlanOrProfile(l.content)"
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          ><v-icon>mdi-share-variant</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Share</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          @click="showDeleteConfirm(lIndex)"
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          ><v-icon>mdi-delete</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Delete</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="showImportDialog" max-width="500">
       <v-card>
         <v-card-title>
           Import Layout
@@ -103,7 +254,7 @@
             Arrow Key: Move Selection Area
           </v-row>
           <v-row>
-            Shift : Change Selected Color
+            Alt : Change Selected Color
           </v-row>
           <v-row>
             P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
@@ -206,6 +357,7 @@
               :selection.sync="selection"
               :connection.sync="connection"
               :hovering.sync="hoveringCell"
+              :disablePlacementShortcout="disableShortcut"
             ></GridSelection>
             <GridSelectArea
               :selection="selectingArea"
@@ -339,7 +491,7 @@
               Arrow Key: Move Selection Area
             </v-subheader>
             <v-subheader>
-              Shift : Change Selected Color
+              Alt : Change Selected Color
             </v-subheader>
             <v-subheader>
               P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
@@ -360,13 +512,13 @@ import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import CountTable from "@/components/CountTable.vue";
 import { CellPlacement } from "@/types/CellPlacement";
-import { generateSelectedCell } from "@/utils/cell-calc";
+import { generateSelectedCell, calcMoveCell } from "@/utils/cell-calc";
 import { isSeed } from "@/utils/placement-util";
 import { InferenceArea } from "./types/CellPlacement";
 import Layout from "@/layout/harvest-layout.json";
 import { getShare, fromShare } from "./utils/link-share";
 import Axios from "axios";
-
+import moment from "moment";
 export default Vue.extend({
   props: {
     planData: {
@@ -384,6 +536,11 @@ export default Vue.extend({
     CountTable
   },
   created() {
+    const storedLibrary = localStorage.getItem("library");
+    if (storedLibrary) {
+      this.$set(this, "profileLibrary", JSON.parse(storedLibrary));
+    }
+
     const storedSettings = localStorage.getItem("settings");
     if (storedSettings) {
       this.$set(this, "settings", {
@@ -433,6 +590,14 @@ export default Vue.extend({
       failSnackbar: false,
       linkCopiedSnackbar: false,
       routerSetting: false,
+      profileName: "",
+      namingMode: 0,
+      renameItem: 0,
+      confirmMode: 0,
+      confirmItem: 0,
+      showConfirmDialog: false,
+      showNamingDialog: false,
+      showLibraryDialog: false,
       showImportDialog: false,
       showHelpDialog: false,
       showShareDialog: false,
@@ -448,7 +613,7 @@ export default Vue.extend({
         "4": "Tier 4 Seed"
       } as any,
       color: ["purple--text", "yellow--text", "blue--text"],
-      selectingArea: [],
+      selectingArea: [] as number[][],
       connectingPoints: [],
       linkHovering: [] as number[],
       selection: [] as number[][],
@@ -469,10 +634,69 @@ export default Vue.extend({
       },
       isUndo: false,
       isRedo: false,
-      seed: ["1", "2", "3", "4"]
+      seed: ["1", "2", "3", "4"],
+      profileLibrary: [] as any[]
     };
   },
   methods: {
+    confirmProfile() {
+      if (this.confirmMode == 0) {
+        this.replaceProfile();
+      } else if (this.confirmMode == 1) {
+        this.deleteProfile();
+      }
+      this.showConfirmDialog = false;
+    },
+    deleteProfile() {
+      this.profileLibrary.splice(this.confirmItem, 1);
+    },
+    replaceProfile() {
+      this.profileLibrary[this.confirmItem].time = moment().format(
+        "YYYY-MM-DD HH:mm"
+      );
+      this.profileLibrary[this.confirmItem].content = getShare(
+        this.cellPlacement
+      );
+    },
+    showDeleteConfirm(index: number) {
+      this.confirmItem = index;
+      this.confirmMode = 1;
+      this.showConfirmDialog = true;
+    },
+    showReplaceConfirm(index: number) {
+      this.confirmItem = index;
+      this.confirmMode = 0;
+      this.showConfirmDialog = true;
+    },
+    loadSetup(placement: string) {
+      this.$router.replace(`/${placement}`);
+      this.showLibraryDialog = false;
+    },
+    saveProfile() {
+      if (this.namingMode == 0) {
+        if (this.profileLibrary[this.renameItem]) {
+          this.profileLibrary[this.renameItem].name = this.profileName;
+        }
+      } else if (this.namingMode == 1) {
+        this.profileLibrary.push({
+          name: this.profileName,
+          time: moment().format("YYYY-MM-DD HH:mm"),
+          content: getShare(this.cellPlacement)
+        });
+      }
+      this.showNamingDialog = false;
+    },
+    openRenameProfileDialog(index: number) {
+      this.namingMode = 0;
+      this.renameItem = index;
+      this.profileName = this.profileLibrary[index]?.name ?? "";
+      this.showNamingDialog = true;
+    },
+    openCreateProfileDialog() {
+      this.namingMode = 1;
+      this.profileName = "";
+      this.showNamingDialog = true;
+    },
     importLayout() {
       this.$set(this, "cellPlacement", JSON.parse(this.layoutText));
       this.layoutText = "";
@@ -505,10 +729,13 @@ export default Vue.extend({
       document.execCommand("copy");
       this.linkCopiedSnackbar = true;
     },
-    async sharePlan() {
+    sharePlan() {
+      this.sharePlanOrProfile(getShare(this.cellPlacement));
+    },
+    async sharePlanOrProfile(profile: string) {
       try {
         const result = await Axios.post("https://iw.gy/shorten", {
-          url: `${window.location.origin}/#/${getShare(this.cellPlacement)}`
+          url: `${window.location.origin}/#/${profile}`
         });
         this.planLink = result.data.shortenedLink;
         this.showShareDialog = true;
@@ -535,46 +762,35 @@ export default Vue.extend({
       );
     },
     moveListener(e: KeyboardEvent) {
+      let moveCell: number = e.shiftKey ? 5 : 1;
       if (this.isSelected()) {
-        const [x0, x1, y0, y1] = [
+        let [x0, x1, y0, y1] = [
           this.selectingArea[0][0],
           this.selectingArea[1][0],
           this.selectingArea[0][1],
           this.selectingArea[1][1]
         ];
         if (e.keyCode == 37) {
-          if (this.selectingArea[0][1] <= 1 || this.selectingArea[1][1] <= 1) {
-            return;
-          }
-          this.$set(this.selectingArea[0], 1, y1 - 1);
-          this.$set(this.selectingArea[1], 1, y0 - 1);
+          moveCell = -moveCell;
+          [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+          this.$set(this.selectingArea[0], 1, y1);
+          this.$set(this.selectingArea[1], 1, y0);
         }
         if (e.keyCode == 38) {
-          if (this.selectingArea[0][0] <= 1 || this.selectingArea[1][0] <= 1) {
-            return;
-          }
-          this.$set(this.selectingArea[0], 0, x1 - 1);
-          this.$set(this.selectingArea[1], 0, x0 - 1);
+          moveCell = -moveCell;
+          [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+          this.$set(this.selectingArea[0], 0, x1);
+          this.$set(this.selectingArea[1], 0, x0);
         }
         if (e.keyCode == 39) {
-          if (
-            this.selectingArea[0][1] >= this.row ||
-            this.selectingArea[1][1] >= this.row
-          ) {
-            return;
-          }
-          this.$set(this.selectingArea[1], 1, y0 + 1);
-          this.$set(this.selectingArea[0], 1, y1 + 1);
+          [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+          this.$set(this.selectingArea[1], 1, y0);
+          this.$set(this.selectingArea[0], 1, y1);
         }
         if (e.keyCode == 40) {
-          if (
-            this.selectingArea[0][0] >= this.col ||
-            this.selectingArea[1][0] >= this.col
-          ) {
-            return;
-          }
-          this.$set(this.selectingArea[1], 0, x0 + 1);
-          this.$set(this.selectingArea[0], 0, x1 + 1);
+          [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+          this.$set(this.selectingArea[1], 0, x0);
+          this.$set(this.selectingArea[0], 0, x1);
         }
       }
     },
@@ -641,6 +857,9 @@ export default Vue.extend({
       type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4",
       color?: number
     ) {
+      if (!this.isSelected()) {
+        return;
+      }
       generateSelectedCell(selectedArea).forEach(i => {
         if (!this.checkHoverable(i[0], i[1])) {
           return;
@@ -791,6 +1010,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    disableShortcut(): boolean {
+      return this.showNamingDialog || this.showShareDialog;
+    },
     placementOverview(): any {
       const pylon = this.cellPlacement.filter(c => c.text === "P");
       const storage = this.cellPlacement.filter(c => c.text === "S");
@@ -953,6 +1175,12 @@ export default Vue.extend({
     }
   },
   watch: {
+    profileLibrary: {
+      deep: true,
+      handler(val) {
+        localStorage.setItem("library", JSON.stringify(val));
+      }
+    },
     settings: {
       deep: true,
       handler(val) {

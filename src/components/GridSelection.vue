@@ -37,7 +37,10 @@ export default Vue.extend({
     connection: {},
     size: { type: [Number], default: 20 },
     row: { type: [Number], default: 42 },
-    column: { type: [Number], default: 42 }
+    column: { type: [Number], default: 42 },
+    disablePlacementShortcout: {
+      default: false
+    }
   },
   created() {
     document.addEventListener("keyup", this.selectAllListener);
@@ -92,6 +95,9 @@ export default Vue.extend({
       this.$set(this, "hoveringCell", [-1, -1]);
     },
     selectAllListener(e: KeyboardEvent) {
+      if (this.disablePlacementShortcout) {
+        return;
+      }
       if (e.keyCode == 65 && e.ctrlKey) {
         this.$set(this, "selectingArea", [
           [1, 1],
