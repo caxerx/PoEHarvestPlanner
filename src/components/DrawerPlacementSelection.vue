@@ -15,6 +15,7 @@
             height="60"
             width="60"
             @click="placeItem(g.type, i.color)"
+            :class="iIndex == selectedColor ? `select-color` : null"
           >
             <v-img :src="i.image"></v-img>
           </v-btn>
@@ -27,17 +28,56 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "DrawerPlacementSelection",
+  props: {
+    disablePlacementShortcout: {
+      default: false
+    }
+  },
   methods: {
+    keyboardListener(e: KeyboardEvent) {
+      if (this.disablePlacementShortcout) {
+        return;
+      }
+      if (e.keyCode == 18) {
+        e.preventDefault();
+        this.selectedColor = (this.selectedColor + 1) % 3;
+        return;
+      }
+      if (this.keyAllow.includes(e.keyCode)) {
+        this.placeItem(
+          this.keyMap[`${e.keyCode}`],
+          this.color[this.selectedColor]
+        );
+      }
+    },
     placeItem(type: string, color: string) {
       this.$emit("place", [type, this.color.indexOf(color)]);
     }
   },
+  created() {
+    window.addEventListener("keyup", this.keyboardListener);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keyup", this.keyboardListener);
+  },
   data() {
     return {
+      keyAllow: [80, 68, 83, 67, 49, 50, 51, 52],
+      keyMap: {
+        "80": "P",
+        "68": "D",
+        "83": "S",
+        "67": "C",
+        "49": "1",
+        "50": "2",
+        "51": "3",
+        "52": "4"
+      } as any,
       color: ["purple", "yellow", "blue"],
+      selectedColor: 0,
       drawerGroup: [
         {
-          label: "Pylon",
+          label: "Pylon (P)",
           type: "P",
           item: [
             {
@@ -58,7 +98,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Disperser",
+          label: "Disperser (D)",
           type: "D",
           item: [
             {
@@ -79,7 +119,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Storage",
+          label: "Storage (S)",
           type: "S",
           item: [
             {
@@ -100,7 +140,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Collector",
+          label: "Collector (C)",
           type: "C",
           item: [
             {
@@ -121,7 +161,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Tier 1 Seed",
+          label: "Tier 1 Seed (1)",
           type: "1",
           item: [
             {
@@ -142,7 +182,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Tier 2 Seed",
+          label: "Tier 2 Seed (2)",
           type: "2",
           item: [
             {
@@ -163,7 +203,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Tier 3 Seed",
+          label: "Tier 3 Seed (3)",
           type: "3",
           item: [
             {
@@ -184,7 +224,7 @@ export default Vue.extend({
           ]
         },
         {
-          label: "Tier 4 Seed",
+          label: "Tier 4 Seed (4)",
           type: "4",
           item: [
             {
@@ -209,3 +249,9 @@ export default Vue.extend({
   }
 });
 </script>
+<style scoped>
+.select-color {
+  border: 2px solid red !important;
+  box-shadow: 0px 0px 4px red;
+}
+</style>

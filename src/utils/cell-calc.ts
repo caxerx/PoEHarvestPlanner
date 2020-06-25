@@ -41,3 +41,27 @@ export function generateSelectedCell(area: number[][]) {
   }
   return cells;
 }
+
+export function calcMoveCell(
+  p1: number,
+  p2: number,
+  move: number,
+  cell: number
+) {
+  if (move > 0) {
+    const movedCell = Math.max(p1, p2) + move;
+    if (movedCell > cell) {
+      return [
+        p1 + (move - (movedCell - cell)),
+        p2 + (move - (movedCell - cell)),
+      ];
+    }
+    return [p1 + move, p2 + move];
+  } else {
+    const movedCell = Math.min(p1, p2) + move;
+    if (movedCell < 1) {
+      return [p1 + movedCell, p2 + movedCell];
+    }
+    return [p1 + move, p2 + move];
+  }
+}
