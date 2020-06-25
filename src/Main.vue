@@ -397,7 +397,7 @@
               <v-virtual-scroll
                 :bench="1"
                 :items="selectedPlacement"
-                :height="600"
+                :height="isSingleSelection() ? 60 : 600"
                 :item-height="60"
               >
                 <template v-slot="{ item }">
@@ -625,7 +625,8 @@ export default Vue.extend({
         "1": "Tier 1 Seed",
         "2": "Tier 2 Seed",
         "3": "Tier 3 Seed",
-        "4": "Tier 4 Seed"
+        "4": "Tier 4 Seed",
+        H: "Horticrafting Station"
       } as any,
       color: ["purple--text", "yellow--text", "blue--text"],
       selectingArea: [] as number[][],
@@ -869,7 +870,7 @@ export default Vue.extend({
     },
     setPlacement(
       selectedArea: number[][],
-      type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4",
+      type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H",
       color?: number
     ) {
       if (!this.isSelected()) {
@@ -1033,11 +1034,15 @@ export default Vue.extend({
       const storage = this.cellPlacement.filter(c => c.text === "S");
       const disperser = this.cellPlacement.filter(c => c.text === "D");
       const collector = this.cellPlacement.filter(c => c.text === "C");
+      const horticraftingStation = this.cellPlacement.filter(
+        c => c.text === "H"
+      );
       return {
         pylon: this.splitOverviewColor(pylon),
         storage: this.splitOverviewColor(storage),
         disperser: this.splitOverviewColor(disperser),
-        collector: this.splitOverviewColor(collector)
+        collector: this.splitOverviewColor(collector),
+        horticraftingStation: this.splitOverviewColor(horticraftingStation)
       };
     },
     selectedOrHoveringConnection() {

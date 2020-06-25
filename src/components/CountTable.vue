@@ -45,6 +45,14 @@
           <td>{{ overview.collector.total * 25 }}</td>
         </tr>
         <tr>
+          <td>Horticrafting Station</td>
+          <td>{{ overview.horticraftingStation.wild }}</td>
+          <td>{{ overview.horticraftingStation.vivid }}</td>
+          <td>{{ overview.horticraftingStation.primal }}</td>
+          <td>{{ overview.horticraftingStation.total }}</td>
+          <td>{{ overview.horticraftingStation.total * 1800 }}</td>
+        </tr>
+        <tr>
           <td></td>
           <td></td>
           <td></td>
@@ -55,7 +63,8 @@
               overview.pylon.total * 10 +
                 overview.disperser.total * 30 +
                 overview.storage.total * 75 +
-                overview.collector.total * 25
+                overview.collector.total * 25 +
+                overview.horticraftingStation.total * 1800
             }}
           </td>
         </tr>
