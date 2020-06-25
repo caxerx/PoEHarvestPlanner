@@ -251,7 +251,10 @@
             Delete: Delete Selected Item
           </v-row>
           <v-row>
-            Arrow Key: Move Selection Area
+            Arrow Key: Move Selection Area (1 cell)
+          </v-row>
+          <v-row>
+            Shift + Arrow Key: Move Selection Area (5 cell)
           </v-row>
           <v-row>
             Alt : Change Selected Color
@@ -391,26 +394,35 @@
               <v-btn text @click="clearPlacement">Clear</v-btn>
             </v-subheader>
             <v-card>
-              <v-list-item
-                dense
-                v-for="(p, i) in selectedPlacement"
-                :key="`placement-list-item-${i}`"
-                @mouseover="hoverLinkItem([p.x, p.y])"
-                @mouseleave="hoverLinkItem(null)"
-                link
+              <v-virtual-scroll
+                :bench="1"
+                :items="cellPlacement"
+                :height="600"
+                :item-height="60"
               >
-                <v-list-item-content>
-                  <v-list-item-title
-                    :class="getPlacementProp(p.x, p.y).color"
-                    >{{ getPlacementProp(p.x, p.y).name }}</v-list-item-title
+                <template v-slot="{ item }">
+                  <v-list-item
+                    dense
+                    @mouseover="hoverLinkItem([item.x, item.y])"
+                    @mouseleave="hoverLinkItem(null)"
+                    link
                   >
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn icon @click="removePlacement(p.x, p.y)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        :class="getPlacementProp(item.x, item.y).color"
+                        >{{
+                          getPlacementProp(item.x, item.y).name
+                        }}</v-list-item-title
+                      >
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn icon @click="removePlacement(item.x, item.y)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </template>
+              </v-virtual-scroll>
             </v-card>
             <div
               v-if="
@@ -488,7 +500,10 @@
               Delete: Delete Selected Item
             </v-subheader>
             <v-subheader>
-              Arrow Key: Move Selection Area
+              Arrow Key: Move Selection Area (1 cell)
+            </v-subheader>
+            <v-subheader>
+              Shift + Arrow Key: Move Selection Area (5 cell)
             </v-subheader>
             <v-subheader>
               Alt : Change Selected Color
