@@ -12,7 +12,7 @@
         <v-col v-for="(i, iIndex) in g.item" :key="`gi-${iIndex}`">
           <v-btn
             :color="i.color"
-            height="60"
+            :height="60"
             width="60"
             @click="placeItem(g.type, i.color)"
             :class="iIndex == selectedColor ? `select-color` : null"
@@ -62,7 +62,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      keyAllow: [80, 68, 83, 67, 49, 50, 51, 52],
+      keyAllow: [80, 68, 83, 67, 49, 50, 51, 52, 72],
       keyMap: {
         "80": "P",
         "68": "D",
@@ -71,7 +71,8 @@ export default Vue.extend({
         "49": "1",
         "50": "2",
         "51": "3",
-        "52": "4"
+        "52": "4",
+        "72": "H"
       } as any,
       color: ["purple", "yellow", "blue"],
       selectedColor: 0,
@@ -240,6 +241,27 @@ export default Vue.extend({
             {
               image:
                 "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedBoss.png?scale=1",
+              color: "blue"
+            }
+          ]
+        },
+        {
+          label: "Horticrafting Station (H)",
+          type: "H",
+          item: [
+            {
+              image:
+                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
+              color: "purple"
+            },
+            {
+              image:
+                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
+              color: "yellow"
+            },
+            {
+              image:
+                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
               color: "blue"
             }
           ]
