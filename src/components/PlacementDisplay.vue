@@ -45,7 +45,7 @@ export default Vue.extend({
   methods: {
     textStyle(placement: CellPlacement) {
       return {
-        "z-index": this.linkPoint.includes(placement) ? 6 : null
+        "z-index": this.linkPoint.includes(placement) ? 9 : null
       };
     },
     cellStyle(placement: CellPlacement) {
