@@ -396,7 +396,7 @@
             <v-card>
               <v-virtual-scroll
                 :bench="1"
-                :items="cellPlacement"
+                :items="selectedPlacement"
                 :height="600"
                 :item-height="60"
               >
