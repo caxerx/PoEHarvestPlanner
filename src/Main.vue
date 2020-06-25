@@ -20,6 +20,18 @@
         >Import From v1</v-btn
       >
       <v-spacer></v-spacer>
+      <v-select
+        label="Link Filtering"
+        hide-details
+        v-model="settings.linkFilter"
+        solo
+        :items="linkFilterOptions"
+        clearable
+        item-text="label"
+        item-value="value"
+        v-if="settings.alwaysShowPylonLink"
+      ></v-select>
+      <v-spacer></v-spacer>
       <v-btn icon @click="showHelpDialog = true"
         ><v-icon>mdi-help-circle</v-icon></v-btn
       >
@@ -87,6 +99,15 @@
           <v-row>
             Delete: Delete Selected Item
           </v-row>
+          <v-row>
+            Arrow Key: Move Selection Area
+          </v-row>
+          <v-row>
+            Shift : Change Selected Color
+          </v-row>
+          <v-row>
+            P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
+          </v-row>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -150,6 +171,28 @@
                 v-model="settings.alwaysShowDisperserArea"
               ></v-switch> </v-col
           ></v-row>
+          <v-row>
+            <v-col>
+              <v-slider
+                label="Area Indicator Opacity"
+                v-model="settings.areaOpacity"
+              ></v-slider> </v-col
+          ></v-row>
+          <v-row>
+            <v-col>
+              <v-slider
+                label="Connection Line Opacity"
+                v-model="settings.linkOpacity"
+              ></v-slider> </v-col
+          ></v-row>
+
+          <v-row>
+            <v-col>
+              <v-slider
+                label="Element Opacity"
+                v-model="settings.placementOpacity"
+              ></v-slider> </v-col
+          ></v-row>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -168,17 +211,20 @@
               :selection="selectingArea"
               :link-hovering="linkHovering"
               :inference-area="inferenceAreas"
+              :backgroundAlpha="settings.areaOpacity / 100"
             ></GridSelectArea>
             <GridDisplay></GridDisplay>
             <GridConnection
               :connecting="connectingPoints"
               :connections="pylonConnections"
               :select-conntect="selectedOrHoveringConnection"
+              :connectionAlpha="settings.linkOpacity / 100"
             ></GridConnection>
             <PlacementDisplay
               :placement="cellPlacementDisplay"
               :is-connecting="isConnecting"
               :link-point="selectedOrHoveringPlacement"
+              :defaultItemAlpha="settings.placementOpacity / 100"
             ></PlacementDisplay>
           </div>
         </v-col>
@@ -214,63 +260,90 @@
                 </v-list-item-action>
               </v-list-item>
             </v-card>
-          </div>
-          <div
-            v-if="
-              isSingleSelection() &&
-                findPlacement(...selection[0]) &&
-                findPylonConnection(findPlacement(...selection[0])).length > 0
-            "
-          >
-            <v-subheader>
-              Linking
-            </v-subheader>
-            <v-card>
-              <template
-                v-for="(c, i) in findPylonConnection(
-                  findPlacement(...selection[0])
-                )"
-              >
-                <v-divider :key="`divider-${i}`" v-if="i != 0"></v-divider>
-                <v-list-item
-                  dense
-                  :key="`list-item-${i}`"
-                  link
-                  @mouseover="
-                    hoverLinkItem(
-                      getLinkedPlacementPos(selection[0], [c.x, c.y])
-                    )
-                  "
-                  @mouseleave="hoverLinkItem(null)"
-                  @click="
-                    setSelection(
-                      ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                    )
-                  "
+            <div
+              v-if="
+                isSingleSelection() &&
+                  findPlacement(...selection[0]) &&
+                  findPylonConnection(findPlacement(...selection[0])).length > 0
+              "
+            >
+              <v-subheader>
+                Linking
+              </v-subheader>
+              <v-card>
+                <template
+                  v-for="(c, i) in findPylonConnection(
+                    findPlacement(...selection[0])
+                  )"
                 >
-                  <v-list-item-content>
-                    <v-list-item-title
-                      :class="
-                        getPlacementProp(
-                          ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                        ).color
-                      "
-                    >
-                      {{
-                        getPlacementProp(
-                          ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                        ).name
-                      }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                  <v-list-item-action>
-                    <v-btn icon @click="removeConnection(c)">
-                      <v-icon>mdi-link-variant-off</v-icon>
-                    </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </template>
-            </v-card>
+                  <v-divider :key="`divider-${i}`" v-if="i != 0"></v-divider>
+                  <v-list-item
+                    dense
+                    :key="`list-item-${i}`"
+                    link
+                    @mouseover="
+                      hoverLinkItem(
+                        getLinkedPlacementPos(selection[0], [c.x, c.y])
+                      )
+                    "
+                    @mouseleave="hoverLinkItem(null)"
+                    @click="
+                      setSelection(
+                        ...getLinkedPlacementPos(selection[0], [c.x, c.y])
+                      )
+                    "
+                  >
+                    <v-list-item-content>
+                      <v-list-item-title
+                        :class="
+                          getPlacementProp(
+                            ...getLinkedPlacementPos(selection[0], [c.x, c.y])
+                          ).color
+                        "
+                      >
+                        {{
+                          getPlacementProp(
+                            ...getLinkedPlacementPos(selection[0], [c.x, c.y])
+                          ).name
+                        }}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn icon @click="removeConnection(c)">
+                        <v-icon>mdi-link-variant-off</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </template>
+              </v-card>
+            </div>
+          </div>
+          <div v-else>
+            <CountTable :overview="placementOverview"></CountTable>
+            <v-subheader>
+              Right Click and drag: Connect Pylon
+            </v-subheader>
+            <v-subheader>
+              Ctrl + A: Select All
+            </v-subheader>
+            <v-subheader>
+              Ctrl + Z: Undo
+            </v-subheader>
+            <v-subheader>
+              Esc: Cancel Select
+            </v-subheader>
+            <v-subheader>
+              Delete: Delete Selected Item
+            </v-subheader>
+            <v-subheader>
+              Arrow Key: Move Selection Area
+            </v-subheader>
+            <v-subheader>
+              Shift : Change Selected Color
+            </v-subheader>
+            <v-subheader>
+              P / D / S / C / 1 / 2 / 3 / 4 : Place Element to Selected Area
+            </v-subheader>
           </div>
         </v-col>
       </v-row>
@@ -285,6 +358,7 @@ import GridSelectArea from "@/components/GridSelectArea.vue";
 import DrawerPlacementSelection from "@/components/DrawerPlacementSelection.vue";
 import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
+import CountTable from "@/components/CountTable.vue";
 import { CellPlacement } from "@/types/CellPlacement";
 import { generateSelectedCell } from "@/utils/cell-calc";
 import { isSeed } from "@/utils/placement-util";
@@ -306,16 +380,21 @@ export default Vue.extend({
     GridSelectArea,
     DrawerPlacementSelection,
     GridConnection,
-    PlacementDisplay
+    PlacementDisplay,
+    CountTable
   },
   created() {
     const storedSettings = localStorage.getItem("settings");
     if (storedSettings) {
-      this.$set(this, "settings", JSON.parse(storedSettings));
+      this.$set(this, "settings", {
+        ...this.settings,
+        ...JSON.parse(storedSettings)
+      });
     }
+    document.addEventListener("keydown", this.moveListener);
     document.addEventListener("keyup", this.keyboardListener);
-    if (+(localStorage.getItem("version") ?? 0) < 1) {
-      localStorage.setItem("version", "1");
+    if (+(localStorage.getItem("version") ?? 0) < 2) {
+      localStorage.setItem("version", "2");
       this.showHelpDialog = true;
     }
     if (!this.planData) {
@@ -327,10 +406,28 @@ export default Vue.extend({
     }
   },
   beforeDestroy() {
+    document.removeEventListener("keydown", this.moveListener);
     document.removeEventListener("keyup", this.keyboardListener);
   },
   data() {
     return {
+      linkFilterOptions: [
+        {
+          label: "Wild",
+          value: 0
+        },
+        {
+          label: "Vivid",
+          value: 1
+        },
+        {
+          label: "Primal",
+          value: 2
+        }
+      ],
+      row: 42,
+      col: 42,
+      moveInterval: [null, null, null, null],
       layoutText: "",
       planLink: "",
       failSnackbar: false,
@@ -361,6 +458,10 @@ export default Vue.extend({
       lastStep: [] as string[],
       nextStep: [] as string[],
       settings: {
+        linkOpacity: 50,
+        areaOpacity: 10,
+        placementOpacity: 70,
+        linkFilter: null,
         alwaysShowPylonLink: false,
         alwaysShowPylonArea: false,
         alwaysShowCollectorArea: false,
@@ -415,6 +516,16 @@ export default Vue.extend({
         this.failSnackbar = true;
       }
     },
+    isSelected() {
+      return (
+        this.selection[0] &&
+        this.selection[1] &&
+        this.selection[0][0] >= 0 &&
+        this.selection[1][0] >= 0 &&
+        this.selection[0][1] >= 0 &&
+        this.selection[1][1] >= 0
+      );
+    },
     isSingleSelection() {
       return (
         this.selection[0] &&
@@ -423,16 +534,63 @@ export default Vue.extend({
         this.selection[0][1] == this.selection[1][1]
       );
     },
+    moveListener(e: KeyboardEvent) {
+      if (this.isSelected()) {
+        const [x0, x1, y0, y1] = [
+          this.selectingArea[0][0],
+          this.selectingArea[1][0],
+          this.selectingArea[0][1],
+          this.selectingArea[1][1]
+        ];
+        if (e.keyCode == 37) {
+          if (this.selectingArea[0][1] <= 1 || this.selectingArea[1][1] <= 1) {
+            return;
+          }
+          this.$set(this.selectingArea[0], 1, y1 - 1);
+          this.$set(this.selectingArea[1], 1, y0 - 1);
+        }
+        if (e.keyCode == 38) {
+          if (this.selectingArea[0][0] <= 1 || this.selectingArea[1][0] <= 1) {
+            return;
+          }
+          this.$set(this.selectingArea[0], 0, x1 - 1);
+          this.$set(this.selectingArea[1], 0, x0 - 1);
+        }
+        if (e.keyCode == 39) {
+          if (
+            this.selectingArea[0][1] >= this.row ||
+            this.selectingArea[1][1] >= this.row
+          ) {
+            return;
+          }
+          this.$set(this.selectingArea[1], 1, y0 + 1);
+          this.$set(this.selectingArea[0], 1, y1 + 1);
+        }
+        if (e.keyCode == 40) {
+          if (
+            this.selectingArea[0][0] >= this.col ||
+            this.selectingArea[1][0] >= this.col
+          ) {
+            return;
+          }
+          this.$set(this.selectingArea[1], 0, x0 + 1);
+          this.$set(this.selectingArea[0], 0, x1 + 1);
+        }
+      }
+    },
     keyboardListener(e: KeyboardEvent) {
       if (e.keyCode == 90 && e.ctrlKey) {
         this.undo();
+        return;
       }
       if (e.keyCode == 46) {
         this.clearPlacement();
+        return;
       }
       if (e.keyCode == 27) {
         this.selection = [];
         this.selectingArea = [];
+        return;
       }
     },
     clearPlacement() {
@@ -622,9 +780,29 @@ export default Vue.extend({
         };
       }
       return null;
+    },
+    splitOverviewColor(placement: CellPlacement[]) {
+      return {
+        wild: placement.filter(c => c.color == 0).length,
+        vivid: placement.filter(c => c.color == 1).length,
+        primal: placement.filter(c => c.color == 2).length,
+        total: placement.length
+      };
     }
   },
   computed: {
+    placementOverview(): any {
+      const pylon = this.cellPlacement.filter(c => c.text === "P");
+      const storage = this.cellPlacement.filter(c => c.text === "S");
+      const disperser = this.cellPlacement.filter(c => c.text === "D");
+      const collector = this.cellPlacement.filter(c => c.text === "C");
+      return {
+        pylon: this.splitOverviewColor(pylon),
+        storage: this.splitOverviewColor(storage),
+        disperser: this.splitOverviewColor(disperser),
+        collector: this.splitOverviewColor(collector)
+      };
+    },
     selectedOrHoveringConnection() {
       let placement: CellPlacement[] = [];
       if (this.isSingleSelection()) {
@@ -744,26 +922,31 @@ export default Vue.extend({
       return inference;
     },
     pylonConnections(): CellPlacement[] {
+      let connections: CellPlacement[] = [];
       if (this.settings.alwaysShowPylonLink) {
-        return this.cellPlacement.filter(p => p.text == "connection");
-      } else {
-        const placementHover = this.findPlacement(
-          this.hoveringCell[0],
-          this.hoveringCell[1]
-        );
-        const placementSelection = this.findPlacement(
-          this.selection[0]?.[0],
-          this.selection[0]?.[1]
-        );
-        const connections = [];
-        if (placementHover) {
-          connections.push(...this.findPylonConnection(placementHover));
+        if (typeof this.settings.linkFilter === "number") {
+          connections = this.cellPlacement
+            .filter(p => p.text == "connection")
+            .filter(p => p.color == this.settings.linkFilter);
+        } else {
+          connections = this.cellPlacement.filter(p => p.text == "connection");
         }
-        if (placementSelection) {
-          connections.push(...this.findPylonConnection(placementSelection));
-        }
-        return connections;
       }
+      const placementHover = this.findPlacement(
+        this.hoveringCell[0],
+        this.hoveringCell[1]
+      );
+      const placementSelection = this.findPlacement(
+        this.selection[0]?.[0],
+        this.selection[0]?.[1]
+      );
+      if (placementHover) {
+        connections.push(...this.findPylonConnection(placementHover));
+      }
+      if (placementSelection) {
+        connections.push(...this.findPylonConnection(placementSelection));
+      }
+      return connections;
     },
     cellPlacementDisplay(): CellPlacement[] {
       return this.cellPlacement.filter(p => p.text != "connection");

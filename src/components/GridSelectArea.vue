@@ -58,8 +58,10 @@ export default Vue.extend({
         width: `${width}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        border: `2px solid rgb(${this.seedColor[ia.color ?? 3]})`,
-        "box-shadow": `0px 0px 4px rgb(${this.seedColor[ia.color ?? 3]})`,
+        border: `2px solid rgba(${this.seedColor[ia.color ?? 3]}, ${this
+          .backgroundAlpha + 0.3})`,
+        "box-shadow": `0px 0px 4px rgba(${this.seedColor[ia.color ?? 3]}, ${this
+          .backgroundAlpha + 0.3})`,
         "background-color": `rgba(${this.seedColor[ia.color ?? 3]}, ${
           this.backgroundAlpha
         })`
