@@ -57,7 +57,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      lineColor: ["#9C27B0", "#F57F17", "#2196F3"]
+      lineColor: ["#EA6AFF", "#FF9B43", "#56B4FF"]
     };
   },
   computed: {
