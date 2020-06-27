@@ -7,3 +7,8 @@ export default Vue.extend({
   name: "App"
 });
 </script>
+<style>
+html {
+  user-select: none;
+}
+</style>

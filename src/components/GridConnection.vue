@@ -62,7 +62,6 @@ export default Vue.extend({
         height: `${size[0]}px`,
         width: `${size[1]}px`,
         "pointer-events": "none",
-        "user-select": "none",
         "z-index": 8,
         top: 0,
         left: 0,

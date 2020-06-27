@@ -74,7 +74,6 @@ export default Vue.extend({
   margin: 0;
   padding: 0;
   position: absolute;
-  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
