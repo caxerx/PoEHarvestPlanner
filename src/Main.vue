@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app width="300" style="user-select: none" permanent>
+    <v-navigation-drawer app width="300" permanent>
       <DrawerPlacementSelection
         @place="placeItem"
         :disablePlacementShortcout="disableShortcut"
@@ -33,14 +33,48 @@
         v-if="settings.alwaysShowPylonLink"
       ></v-select>
       <v-spacer></v-spacer>
-      <v-btn icon @click="showHelpDialog = true"><v-icon>mdi-help-circle</v-icon></v-btn>
-      <v-btn icon @click="sharePlan" :disabled="shareLoading">
-        <v-progress-circular indeterminate color="white" v-if="shareLoading"></v-progress-circular>
-        <v-icon v-else>mdi-share-variant</v-icon>
-      </v-btn>
-      <v-btn icon @click="showSettingDialog = true"><v-icon>mdi-cog</v-icon></v-btn>
-      <v-btn icon @click="showLibraryDialog = true"><v-icon>mdi-bookshelf</v-icon></v-btn>
-      <v-btn icon href="https://github.com/caxerx/PoEHarvestPlanner"><v-icon>mdi-github</v-icon></v-btn>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon @click="showHelpDialog = true" v-bind="attrs" v-on="on"><v-icon>mdi-help-circle</v-icon></v-btn>
+        </template>
+        <span>Help</span>
+      </v-tooltip>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon @click="sharePlan" v-bind="attrs" v-on="on" :disabled="shareLoading">
+            <v-progress-circular indeterminate color="white" v-if="shareLoading"></v-progress-circular>
+            <v-icon v-else>mdi-share-variant</v-icon>
+          </v-btn>
+        </template>
+        <span>Share Current Plan</span>
+      </v-tooltip>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="showSettingDialog = true"><v-icon>mdi-cog</v-icon></v-btn>
+        </template>
+        <span>Settings</span>
+      </v-tooltip>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="showLibraryDialog = true"
+            ><v-icon>mdi-content-save</v-icon></v-btn
+          >
+        </template>
+        <span>Graden Plan Library</span>
+      </v-tooltip>
+
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" href="https://github.com/caxerx/PoEHarvestPlanner"
+            ><v-icon>mdi-github</v-icon></v-btn
+          >
+        </template>
+        <span>Github Repository</span>
+      </v-tooltip>
     </v-app-bar>
 
     <v-snackbar v-model="failSnackbar" multi-line :timeout="3000">
@@ -116,9 +150,9 @@
           <v-list dense v-else>
             <v-list-item v-for="(l, lIndex) in profileLibrary" :key="`profile-${lIndex}`">
               <v-list-item-content>
-                <v-list-item-title
-                  >{{ l.name }} <a class="ml-1" @click="openRenameProfileDialog(lIndex)">Rename</a></v-list-item-title
-                >
+                <v-list-item-title>
+                  {{ l.name }} <a class="ml-1" @click="openRenameProfileDialog(lIndex)">Rename</a>
+                </v-list-item-title>
                 <v-list-item-subtitle>{{ l.time }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
@@ -188,35 +222,7 @@
         <v-card-title>
           Help
         </v-card-title>
-        <v-card-text>
-          <v-row>
-            Right Click and drag: Connect Pylon
-          </v-row>
-          <v-row>
-            Ctrl + A: Select All
-          </v-row>
-          <v-row>
-            Ctrl + Z: Undo
-          </v-row>
-          <v-row>
-            Esc: Cancel Select
-          </v-row>
-          <v-row>
-            Delete: Delete Selected Item
-          </v-row>
-          <v-row>
-            Arrow Key: Move Selection Area (1 cell)
-          </v-row>
-          <v-row>
-            Shift + Arrow Key: Move Selection Area (5 cell)
-          </v-row>
-          <v-row>
-            Alt : Change Selected Color
-          </v-row>
-          <v-row>
-            P / D / S / C / H / 1 / 2 / 3 / 4 : Place Element to Selected Area
-          </v-row>
-        </v-card-text>
+        <Help details></Help>
       </v-card>
     </v-dialog>
     <v-dialog max-width="500" v-model="showShareDialog">
@@ -310,7 +316,7 @@
             ></PlacementDisplay>
           </div>
         </v-col>
-        <v-col class="mr-3" style="user-select: none; max-height: calc(100vh - 64px); overflow-y: auto;">
+        <v-col class="mr-3" style="max-height: calc(100vh - 64px); overflow-y: auto;">
           <div v-if="selectedPlacement.length > 0">
             <v-subheader>
               Selected
@@ -385,33 +391,7 @@
           </div>
           <div v-else>
             <CountTable :overview="placementOverview"></CountTable>
-            <v-subheader>
-              Right Click and drag: Connect Pylon
-            </v-subheader>
-            <v-subheader>
-              Ctrl + A: Select All
-            </v-subheader>
-            <v-subheader>
-              Ctrl + Z: Undo
-            </v-subheader>
-            <v-subheader>
-              Esc: Cancel Select
-            </v-subheader>
-            <v-subheader>
-              Delete: Delete Selected Item
-            </v-subheader>
-            <v-subheader>
-              Arrow Key: Move Selection Area (1 cell)
-            </v-subheader>
-            <v-subheader>
-              Shift + Arrow Key: Move Selection Area (5 cell)
-            </v-subheader>
-            <v-subheader>
-              Alt : Change Selected Color
-            </v-subheader>
-            <v-subheader>
-              P / D / S / C / H / 1 / 2 / 3 / 4 : Place Element to Selected Area
-            </v-subheader>
+            <Help></Help>
           </div>
         </v-col>
       </v-row>
@@ -427,6 +407,7 @@ import DrawerPlacementSelection from "@/components/DrawerPlacementSelection.vue"
 import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import CountTable from "@/components/CountTable.vue";
+import Help from "@/components/Help.vue";
 import { CellPlacement } from "@/types/CellPlacement";
 import { generateSelectedCell, calcMoveCell } from "@/utils/cell-calc";
 import { isSeed } from "@/utils/placement-util";
@@ -449,7 +430,8 @@ export default Vue.extend({
     DrawerPlacementSelection,
     GridConnection,
     PlacementDisplay,
-    CountTable
+    CountTable,
+    Help
   },
   created() {
     const storedLibrary = localStorage.getItem("library");

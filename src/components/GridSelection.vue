@@ -148,7 +148,6 @@ export default Vue.extend({
 
 <style scoped>
 .cell-selection {
-  user-select: none;
   margin: 0;
   padding: 0;
   position: absolute;

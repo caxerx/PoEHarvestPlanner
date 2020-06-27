@@ -83,7 +83,6 @@ export default Vue.extend({
   box-shadow: 0px 0px 4px red;
   z-index: 7;
   pointer-events: none;
-  user-select: none;
   position: absolute;
 }
 
@@ -92,14 +91,12 @@ export default Vue.extend({
   box-shadow: 0px 0px 4px pink;
   z-index: 7;
   pointer-events: none;
-  user-select: none;
   position: absolute;
 }
 
 .inference-area {
   z-index: 6;
   pointer-events: none;
-  user-select: none;
   position: absolute;
 }
 </style>

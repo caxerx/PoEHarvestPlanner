@@ -61,7 +61,6 @@ export default Vue.extend({
   margin: 0;
   padding: 0;
   position: absolute;
-  user-select: none;
   z-index: 1;
 }
 </style>
