@@ -26,12 +26,12 @@ jobs:
     - run: npm install
     
     - run: npm run build
-    
-    - name: GitHub Pages
-      uses: crazy-max/ghaction-github-pages@v2.0.1
       env:
         VUE_APP_BUILD_NUMBER: ${{ steps.get-build-number.outputs.build-number }}
         VUE_APP_GIT_HASH: ${{ github.sha }}
+    
+    - name: GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2.0.1
       with:
         target_branch: gh-pages
         keep_history: true
