@@ -1,12 +1,7 @@
 <template>
   <div :style="elementStyle">
     <template v-for="i in row">
-      <div
-        v-for="j in column"
-        :style="cellStyle(i, j)"
-        :key="`column-${i}-${j}`"
-        class="cell"
-      ></div>
+      <div v-for="j in column" :style="cellStyle(i, j)" :key="`column-${i}-${j}`" class="cell"></div>
     </template>
   </div>
 </template>
@@ -14,10 +9,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Layout from "@/layout/harvest-layout.json";
-import {
-  calculateCellPosition,
-  calculateAreaPixelSize
-} from "@/utils/cell-calc";
+import { calculateCellPosition, calculateAreaPixelSize } from "@/utils/cell-calc";
 
 export default Vue.extend({
   name: "GridDisplay",

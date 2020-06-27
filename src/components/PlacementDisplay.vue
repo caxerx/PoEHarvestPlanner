@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div
-      v-for="(p, index) in placement"
-      :style="cellStyle(p)"
-      :key="`placement-${index}`"
-      class="placement-cell"
-    >
+    <div v-for="(p, index) in placement" :style="cellStyle(p)" :key="`placement-${index}`" class="placement-cell">
       <div class="placement-text" :style="textStyle(p)">{{ p.text }}</div>
     </div>
   </div>
@@ -49,18 +44,13 @@ export default Vue.extend({
       };
     },
     cellStyle(placement: CellPlacement) {
-      const [xPos, yPos] = calculateCellPosition(
-        [+placement.x, +placement.y],
-        this.size
-      );
+      const [xPos, yPos] = calculateCellPosition([+placement.x, +placement.y], this.size);
       const style = {
         height: `${this.size}px`,
         width: `${this.size}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        "background-color": `rgba(${
-          this.backgroundColor[placement.color ?? -1]
-        }, ${this.defaultItemAlpha})`,
+        "background-color": `rgba(${this.backgroundColor[placement.color ?? -1]}, ${this.defaultItemAlpha})`,
         opacity: 1
       };
 
@@ -76,8 +66,7 @@ export default Vue.extend({
 <style scoped>
 .placement-text {
   position: relative;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-    1px 1px 0 #000;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 .placement-cell {
   pointer-events: none;

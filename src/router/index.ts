@@ -9,17 +9,17 @@ const routes: Array<RouteConfig> = [
     path: "/:planData",
     name: "Home",
     component: Main,
-    props: true,
+    props: true
   },
   {
     path: "/",
     name: "Home",
-    component: Main,
-  },
+    component: Main
+  }
 ];
 
 const router = new VueRouter({
-  routes,
+  routes
 });
 
 export default router;
