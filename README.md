@@ -14,4 +14,4 @@ Try it out on https://harvest.iw.gy/
 - Prevent Link connection lines obscure the letter (Deployed)
 - Configuration for area display
   - Alpha Slider of area (Deployed)
-  - Toggle for each type of element
+  - Toggle for each type of element (Deployed, as opacity setting)

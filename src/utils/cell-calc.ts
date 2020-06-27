@@ -1,3 +1,4 @@
+import { CellPlacement } from "../types/CellPlacement";
 export function calculateAreaSize(area: number[][]) {
   let [x1, y1] = area[0];
   let [x2, y2] = area[1];
@@ -53,4 +54,9 @@ export function calcMoveCell(p1: number, p2: number, move: number, cell: number)
     }
     return [p1 + move, p2 + move];
   }
+}
+
+export function isOutOfRange(point: number[], originPoint: number[], size: number) {
+  const area = calculateAreaSize([point, originPoint]);
+  return area[0] - 1 > size || area[1] - 1 > size;
 }

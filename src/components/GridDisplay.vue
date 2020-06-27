@@ -16,12 +16,14 @@ export default Vue.extend({
   props: {
     size: { type: [Number], default: 20 },
     row: { type: [Number], default: 42 },
-    column: { type: [Number], default: 42 }
+    column: { type: [Number], default: 42 },
+    greyscale: { type: Boolean, default: false }
   },
   data() {
     return {
       cellData: Layout,
-      color: [null, "green", "pink", "blue", "brown"]
+      color: [null, "green", "pink", "blue", "brown"],
+      greyscaleColor: [null, "#303030", "#999999", "#E5E5E5", "#E5E5E5"]
     };
   },
   computed: {
@@ -47,7 +49,7 @@ export default Vue.extend({
         width: `${this.size}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        "background-color": this.color[this.cellData[i - 1]?.[j - 1]]
+        "background-color": (this.greyscale ? this.greyscaleColor : this.color)[this.cellData[i - 1]?.[j - 1]]
       };
     }
   }

@@ -26,9 +26,6 @@ export default Vue.extend({
     },
     inferenceArea: {
       default: (): InferenceArea[] => []
-    },
-    backgroundAlpha: {
-      default: 0.1
     }
   },
   data() {
@@ -49,9 +46,9 @@ export default Vue.extend({
         width: `${width}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        border: `2px solid rgba(${this.seedColor[ia.color ?? 3]}, ${this.backgroundAlpha + 0.3})`,
-        "box-shadow": `0px 0px 4px rgba(${this.seedColor[ia.color ?? 3]}, ${this.backgroundAlpha + 0.3})`,
-        "background-color": `rgba(${this.seedColor[ia.color ?? 3]}, ${this.backgroundAlpha})`
+        border: `2px solid rgba(${this.seedColor[ia.color ?? 3]}, ${ia.borderOpacity})`,
+        "box-shadow": `0px 0px 4px rgba(${this.seedColor[ia.color ?? 3]}, ${ia.borderOpacity})`,
+        "background-color": `rgba(${this.seedColor[ia.color ?? 3]}, ${ia.backgroundOpacity})`
       };
     },
     selectionStyle() {

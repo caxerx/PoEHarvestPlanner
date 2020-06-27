@@ -25,7 +25,7 @@ export default Vue.extend({
       buildNumber: process.env.VUE_APP_BUILD_NUMBER,
       gitHash: process.env.VUE_APP_GIT_HASH,
       shortcut: [
-        "Right Click and drag: Connect Pylon",
+        "Right Click and drag / Ctrl + Right Click: Connect Pylon",
         "Ctrl + A: Select All",
         "Ctrl + Z: Undo",
         "Esc: Cancel Select",
@@ -33,6 +33,7 @@ export default Vue.extend({
         "Arrow Key: Move Selection Area (1 cell)",
         "Shift + Arrow Key: Move Selection Area (5 cell)",
         "Alt : Change Selected Color",
+        "Q / W / E : Change Color To (Wild / Vivid / Primal)",
         "P / D / S / C / H / 1 / 2 / 3 / 4 : Place Element to Selected Area"
       ]
     };

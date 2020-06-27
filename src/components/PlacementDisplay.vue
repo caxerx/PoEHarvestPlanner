@@ -9,7 +9,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Layout from "@/layout/harvest-layout.json";
-import { calculateCellPosition } from "@/utils/cell-calc";
+import { calculateCellPosition, isOutOfRange } from "@/utils/cell-calc";
 import { CellPlacement } from "@/types/CellPlacement";
 import { isSeed } from "../utils/placement-util";
 
@@ -22,12 +22,18 @@ export default Vue.extend({
     connectingSeedAlpha: {
       default: 0.3
     },
-    defaultItemAlpha: {
-      default: 0.7
+    placementOpacity: {
+      default: (): Record<string, number> => ({})
     },
     size: { type: [Number], default: 20 },
     placement: {},
     linkPoint: {
+      default: (): CellPlacement[] => []
+    },
+    connecting: {
+      default: (): number[][] => []
+    },
+    connectingPlacement: {
       default: (): CellPlacement[] => []
     }
   },
@@ -50,11 +56,18 @@ export default Vue.extend({
         width: `${this.size}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        "background-color": `rgba(${this.backgroundColor[placement.color ?? -1]}, ${this.defaultItemAlpha})`,
+        "background-color": `rgba(${this.backgroundColor[placement.color ?? -1]}, ${
+          this.placementOpacity[placement.text]
+        })`,
         opacity: 1
       };
 
-      if (this.isConnecting && isSeed(placement)) {
+      if (
+        this.isConnecting &&
+        (isSeed(placement) ||
+          isOutOfRange([+placement.x, +placement.y], this.connecting[0], 4) ||
+          (this.connectingPlacement[0] && this.connectingPlacement[0].text != "P" && placement.text != "P"))
+      ) {
         style.opacity = this.connectingSeedAlpha;
       }
       return style;

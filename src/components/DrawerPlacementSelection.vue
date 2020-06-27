@@ -39,6 +39,21 @@ export default Vue.extend({
         this.selectedColor = (this.selectedColor + 1) % 3;
         return;
       }
+      if (e.keyCode == 81) {
+        e.preventDefault();
+        this.selectedColor = 0;
+        return;
+      }
+      if (e.keyCode == 87) {
+        e.preventDefault();
+        this.selectedColor = 1;
+        return;
+      }
+      if (e.keyCode == 69) {
+        e.preventDefault();
+        this.selectedColor = 2;
+        return;
+      }
       if (this.keyAllow.includes(e.keyCode)) {
         this.placeItem(this.keyMap[`${e.keyCode}`], this.color[this.selectedColor]);
       }
