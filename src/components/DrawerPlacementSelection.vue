@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-item-group
-      multiple
-      v-for="(g, gIndex) in drawerGroup"
-      :key="`gp-${gIndex}`"
-    >
+    <v-item-group multiple v-for="(g, gIndex) in drawerGroup" :key="`gp-${gIndex}`">
       <v-subheader>
         {{ g.label }}
       </v-subheader>
@@ -44,10 +40,7 @@ export default Vue.extend({
         return;
       }
       if (this.keyAllow.includes(e.keyCode)) {
-        this.placeItem(
-          this.keyMap[`${e.keyCode}`],
-          this.color[this.selectedColor]
-        );
+        this.placeItem(this.keyMap[`${e.keyCode}`], this.color[this.selectedColor]);
       }
     },
     placeItem(type: string, color: string) {
@@ -73,7 +66,7 @@ export default Vue.extend({
         "51": "3",
         "52": "4",
         "72": "H"
-      } as any,
+      } as Record<string, string>,
       color: ["purple", "yellow", "blue"],
       selectedColor: 0,
       drawerGroup: [
@@ -82,18 +75,15 @@ export default Vue.extend({
           type: "P",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestPole.png?scale=1",
               color: "blue"
             }
           ]
@@ -103,18 +93,15 @@ export default Vue.extend({
           type: "D",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestSprinkler.png?scale=1",
               color: "blue"
             }
           ]
@@ -124,18 +111,15 @@ export default Vue.extend({
           type: "S",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestStorage.png?scale=1",
               color: "blue"
             }
           ]
@@ -145,18 +129,15 @@ export default Vue.extend({
           type: "C",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestRedExtractor.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestRedExtractor.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestGreenExtractor.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestGreenExtractor.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestBlueExtractor.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestBlueExtractor.png?scale=1",
               color: "blue"
             }
           ]
@@ -166,18 +147,15 @@ export default Vue.extend({
           type: "1",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier1DropBear.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier1DropBear.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier1MeleeSpider.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier1MeleeSpider.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier1Rhoa.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier1Rhoa.png?scale=1",
               color: "blue"
             }
           ]
@@ -187,18 +165,15 @@ export default Vue.extend({
           type: "2",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier2Beast.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier2Beast.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier2SabreSpider.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier2SabreSpider.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier2Rhex.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier2Rhex.png?scale=1",
               color: "blue"
             }
           ]
@@ -208,18 +183,15 @@ export default Vue.extend({
           type: "3",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier3Beast.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedTier3Beast.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier3BlackSpider.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedTier3BlackSpider.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier3Rhex.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedTier3Rhex.png?scale=1",
               color: "blue"
             }
           ]
@@ -229,18 +201,15 @@ export default Vue.extend({
           type: "4",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedBoss.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/RedSeedBoss.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedBoss.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/YellowSeedBoss.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedBoss.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/BlueSeedBoss.png?scale=1",
               color: "blue"
             }
           ]
@@ -250,18 +219,15 @@ export default Vue.extend({
           type: "H",
           item: [
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
               color: "purple"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
               color: "yellow"
             },
             {
-              image:
-                "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
               color: "blue"
             }
           ]

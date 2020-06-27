@@ -19,9 +19,7 @@
         </v-icon>
         Redo
       </v-btn>
-      <v-btn color="grey" @click="showImportDialog = true"
-        >Import From v1</v-btn
-      >
+      <v-btn color="grey" @click="showImportDialog = true">Import From v1</v-btn>
       <v-spacer></v-spacer>
       <v-select
         label="Link Filtering"
@@ -35,19 +33,14 @@
         v-if="settings.alwaysShowPylonLink"
       ></v-select>
       <v-spacer></v-spacer>
-      <v-btn icon @click="showHelpDialog = true"
-        ><v-icon>mdi-help-circle</v-icon></v-btn
-      >
-      <v-btn icon @click="sharePlan"><v-icon>mdi-share-variant</v-icon></v-btn>
-      <v-btn icon @click="showSettingDialog = true"
-        ><v-icon>mdi-cog</v-icon></v-btn
-      >
-      <v-btn icon @click="showLibraryDialog = true"
-        ><v-icon>mdi-bookshelf</v-icon></v-btn
-      >
-      <v-btn icon href="https://github.com/caxerx/PoEHarvestPlanner"
-        ><v-icon>mdi-github</v-icon></v-btn
-      >
+      <v-btn icon @click="showHelpDialog = true"><v-icon>mdi-help-circle</v-icon></v-btn>
+      <v-btn icon @click="sharePlan" :disabled="shareLoading">
+        <v-progress-circular indeterminate color="white" v-if="shareLoading"></v-progress-circular>
+        <v-icon v-else>mdi-share-variant</v-icon>
+      </v-btn>
+      <v-btn icon @click="showSettingDialog = true"><v-icon>mdi-cog</v-icon></v-btn>
+      <v-btn icon @click="showLibraryDialog = true"><v-icon>mdi-bookshelf</v-icon></v-btn>
+      <v-btn icon href="https://github.com/caxerx/PoEHarvestPlanner"><v-icon>mdi-github</v-icon></v-btn>
     </v-app-bar>
 
     <v-snackbar v-model="failSnackbar" multi-line :timeout="3000">
@@ -61,12 +54,7 @@
     <v-snackbar v-model="linkCopiedSnackbar" multi-line :timeout="3000">
       Link Copied
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="red"
-          text
-          v-bind="attrs"
-          @click="linkCopiedSnackbar = false"
-        >
+        <v-btn color="red" text v-bind="attrs" @click="linkCopiedSnackbar = false">
           Close
         </v-btn>
       </template>
@@ -77,10 +65,7 @@
           {{ confirmMode == 0 ? "Replace Profile" : "Delete Profile" }}
           <v-spacer></v-spacer>
         </v-card-title>
-        <v-card-text>
-          Are you sure to {{ confirmMode == 0 ? "replace" : "delete" }} the
-          profile?
-        </v-card-text>
+        <v-card-text> Are you sure to {{ confirmMode == 0 ? "replace" : "delete" }} the profile? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="showConfirmDialog = false">
@@ -99,12 +84,7 @@
           <v-spacer></v-spacer>
         </v-card-title>
         <v-card-text>
-          <v-text-field
-            hide-details
-            v-model="profileName"
-            outlined
-            label="Profile Name"
-          ></v-text-field>
+          <v-text-field hide-details v-model="profileName" outlined label="Profile Name"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -122,11 +102,7 @@
           <v-spacer></v-spacer>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                @click="openCreateProfileDialog()"
+              <v-btn icon v-bind="attrs" v-on="on" @click="openCreateProfileDialog()"
                 ><v-icon>mdi-content-save</v-icon></v-btn
               >
             </template>
@@ -138,16 +114,10 @@
             No Saved Profile
           </v-subheader>
           <v-list dense v-else>
-            <v-list-item
-              v-for="(l, lIndex) in profileLibrary"
-              :key="`profile-${lIndex}`"
-            >
+            <v-list-item v-for="(l, lIndex) in profileLibrary" :key="`profile-${lIndex}`">
               <v-list-item-content>
                 <v-list-item-title
-                  >{{ l.name }}
-                  <a class="ml-1" @click="openRenameProfileDialog(lIndex)"
-                    >Rename</a
-                  ></v-list-item-title
+                  >{{ l.name }} <a class="ml-1" @click="openRenameProfileDialog(lIndex)">Rename</a></v-list-item-title
                 >
                 <v-list-item-subtitle>{{ l.time }}</v-list-item-subtitle>
               </v-list-item-content>
@@ -156,11 +126,7 @@
                   <v-col cols="auto">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="loadSetup(l.content)"
+                        <v-btn icon v-bind="attrs" v-on="on" @click="loadSetup(l.content)"
                           ><v-icon>mdi-folder-open</v-icon></v-btn
                         >
                       </template>
@@ -170,11 +136,7 @@
                   <v-col cols="auto">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="showReplaceConfirm(lIndex)"
+                        <v-btn icon v-bind="attrs" v-on="on" @click="showReplaceConfirm(lIndex)"
                           ><v-icon>mdi-file-replace</v-icon></v-btn
                         >
                       </template>
@@ -184,11 +146,7 @@
                   <v-col cols="auto">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          @click="sharePlanOrProfile(l.content)"
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
+                        <v-btn @click="sharePlanOrProfile(l.content)" icon v-bind="attrs" v-on="on"
                           ><v-icon>mdi-share-variant</v-icon></v-btn
                         >
                       </template>
@@ -198,11 +156,7 @@
                   <v-col cols="auto">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          @click="showDeleteConfirm(lIndex)"
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
+                        <v-btn @click="showDeleteConfirm(lIndex)" icon v-bind="attrs" v-on="on"
                           ><v-icon>mdi-delete</v-icon></v-btn
                         >
                       </template>
@@ -273,13 +227,7 @@
         <v-card-text>
           <v-row align="center" justify="center">
             <v-col>
-              <v-text-field
-                outlined
-                hide-details
-                ref="linkTextField"
-                readonly
-                v-model="planLink"
-              ></v-text-field>
+              <v-text-field outlined hide-details ref="linkTextField" readonly v-model="planLink"></v-text-field>
             </v-col>
             <v-col cols="auto">
               <v-btn text @click="copyLink">Copy</v-btn>
@@ -296,26 +244,17 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <v-switch
-                label="Always Show Pylon Link"
-                v-model="settings.alwaysShowPylonLink"
-              ></v-switch>
+              <v-switch label="Always Show Pylon Link" v-model="settings.alwaysShowPylonLink"></v-switch>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-switch
-                label="Always Show Pylon Area"
-                v-model="settings.alwaysShowPylonArea"
-              ></v-switch>
+              <v-switch label="Always Show Pylon Area" v-model="settings.alwaysShowPylonArea"></v-switch>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-switch
-                label="Always Show Collector Area"
-                v-model="settings.alwaysShowCollectorArea"
-              ></v-switch>
+              <v-switch label="Always Show Collector Area" v-model="settings.alwaysShowCollectorArea"></v-switch>
             </v-col>
           </v-row>
           <v-row>
@@ -326,26 +265,14 @@
               ></v-switch> </v-col
           ></v-row>
           <v-row>
-            <v-col>
-              <v-slider
-                label="Area Indicator Opacity"
-                v-model="settings.areaOpacity"
-              ></v-slider> </v-col
+            <v-col> <v-slider label="Area Indicator Opacity" v-model="settings.areaOpacity"></v-slider> </v-col
           ></v-row>
           <v-row>
-            <v-col>
-              <v-slider
-                label="Connection Line Opacity"
-                v-model="settings.linkOpacity"
-              ></v-slider> </v-col
+            <v-col> <v-slider label="Connection Line Opacity" v-model="settings.linkOpacity"></v-slider> </v-col
           ></v-row>
 
           <v-row>
-            <v-col>
-              <v-slider
-                label="Element Opacity"
-                v-model="settings.placementOpacity"
-              ></v-slider> </v-col
+            <v-col> <v-slider label="Element Opacity" v-model="settings.placementOpacity"></v-slider> </v-col
           ></v-row>
         </v-card-text>
       </v-card>
@@ -383,10 +310,7 @@
             ></PlacementDisplay>
           </div>
         </v-col>
-        <v-col
-          class="mr-3"
-          style="user-select: none; max-height: calc(100vh - 64px); overflow-y: auto;"
-        >
+        <v-col class="mr-3" style="user-select: none; max-height: calc(100vh - 64px); overflow-y: auto;">
           <div v-if="selectedPlacement.length > 0">
             <v-subheader>
               Selected
@@ -408,12 +332,9 @@
                     link
                   >
                     <v-list-item-content>
-                      <v-list-item-title
-                        :class="getPlacementProp(item.x, item.y).color"
-                        >{{
-                          getPlacementProp(item.x, item.y).name
-                        }}</v-list-item-title
-                      >
+                      <v-list-item-title :class="getPlacementProp(item.x, item.y).color">{{
+                        getPlacementProp(item.x, item.y).name
+                      }}</v-list-item-title>
                     </v-list-item-content>
                     <v-list-item-action>
                       <v-btn icon @click="removePlacement(item.x, item.y)">
@@ -435,41 +356,21 @@
                 Linking
               </v-subheader>
               <v-card>
-                <template
-                  v-for="(c, i) in findPylonConnection(
-                    findPlacement(...selection[0])
-                  )"
-                >
+                <template v-for="(c, i) in findPylonConnection(findPlacement(...selection[0]))">
                   <v-divider :key="`divider-${i}`" v-if="i != 0"></v-divider>
                   <v-list-item
                     dense
                     :key="`list-item-${i}`"
                     link
-                    @mouseover="
-                      hoverLinkItem(
-                        getLinkedPlacementPos(selection[0], [c.x, c.y])
-                      )
-                    "
+                    @mouseover="hoverLinkItem(getLinkedPlacementPos(selection[0], [c.x, c.y]))"
                     @mouseleave="hoverLinkItem(null)"
-                    @click="
-                      setSelection(
-                        ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                      )
-                    "
+                    @click="setSelection(...getLinkedPlacementPos(selection[0], [c.x, c.y]))"
                   >
                     <v-list-item-content>
                       <v-list-item-title
-                        :class="
-                          getPlacementProp(
-                            ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                          ).color
-                        "
+                        :class="getPlacementProp(...getLinkedPlacementPos(selection[0], [c.x, c.y])).color"
                       >
-                        {{
-                          getPlacementProp(
-                            ...getLinkedPlacementPos(selection[0], [c.x, c.y])
-                          ).name
-                        }}
+                        {{ getPlacementProp(...getLinkedPlacementPos(selection[0], [c.x, c.y])).name }}
                       </v-list-item-title>
                     </v-list-item-content>
                     <v-list-item-action>
@@ -570,11 +471,7 @@ export default Vue.extend({
       this.showHelpDialog = true;
     }
     if (!this.planData) {
-      this.$set(
-        this,
-        "cellPlacement",
-        JSON.parse(localStorage.getItem("storedSetup") ?? "[]")
-      );
+      this.$set(this, "cellPlacement", JSON.parse(localStorage.getItem("storedSetup") ?? "[]"));
     }
   },
   beforeDestroy() {
@@ -583,6 +480,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      shareLoading: false,
       linkFilterOptions: [
         {
           label: "Wild",
@@ -627,7 +525,7 @@ export default Vue.extend({
         "3": "Tier 3 Seed",
         "4": "Tier 4 Seed",
         H: "Horticrafting Station"
-      } as any,
+      } as Record<string, string>,
       color: ["purple--text", "yellow--text", "blue--text"],
       selectingArea: [] as number[][],
       connectingPoints: [],
@@ -651,7 +549,7 @@ export default Vue.extend({
       isUndo: false,
       isRedo: false,
       seed: ["1", "2", "3", "4"],
-      profileLibrary: [] as any[]
+      profileLibrary: [] as Record<string, string>[]
     };
   },
   methods: {
@@ -667,12 +565,8 @@ export default Vue.extend({
       this.profileLibrary.splice(this.confirmItem, 1);
     },
     replaceProfile() {
-      this.profileLibrary[this.confirmItem].time = moment().format(
-        "YYYY-MM-DD HH:mm"
-      );
-      this.profileLibrary[this.confirmItem].content = getShare(
-        this.cellPlacement
-      );
+      this.profileLibrary[this.confirmItem].time = moment().format("YYYY-MM-DD HH:mm");
+      this.profileLibrary[this.confirmItem].content = getShare(this.cellPlacement);
     },
     showDeleteConfirm(index: number) {
       this.confirmItem = index;
@@ -741,12 +635,14 @@ export default Vue.extend({
       this.isRedo = false;
     },
     copyLink() {
-      (this.$refs.linkTextField as any).$refs.input.select();
+      ((this.$refs.linkTextField as Vue).$refs.input as HTMLInputElement).select();
       document.execCommand("copy");
       this.linkCopiedSnackbar = true;
     },
-    sharePlan() {
-      this.sharePlanOrProfile(getShare(this.cellPlacement));
+    async sharePlan() {
+      this.shareLoading = true;
+      await this.sharePlanOrProfile(getShare(this.cellPlacement));
+      this.shareLoading = false;
     },
     async sharePlanOrProfile(profile: string) {
       try {
@@ -862,17 +758,15 @@ export default Vue.extend({
         color: this.color[placementColor ?? -1]
       };
     },
-    placeItem(args: any[]) {
-      this.setPlacement(this.selection, args[0], args[1]);
+    placeItem(args: ("P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H" | number)[]) {
+      if (typeof args[0] != "number" && typeof args[1] == "number") {
+        this.setPlacement(this.selection, args[0], args[1]);
+      }
     },
     checkHoverable(i: number, j: number) {
       return Layout[i - 1][j - 1] == 0;
     },
-    setPlacement(
-      selectedArea: number[][],
-      type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H",
-      color?: number
-    ) {
+    setPlacement(selectedArea: number[][], type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H", color?: number) {
       if (!this.isSelected()) {
         return;
       }
@@ -904,16 +798,14 @@ export default Vue.extend({
       this.hoverLinkItem(null);
     },
     addPlacement(placement: CellPlacement) {
-      const index = this.cellPlacement.findIndex(
-        i => i.x == placement.x && i.y == placement.y
-      );
+      const index = this.cellPlacement.findIndex(i => i.x == placement.x && i.y == placement.y);
       if (index >= 0) {
         this.cellPlacement.splice(index, 1);
       }
       this.cellPlacement.push(placement);
     },
-    findPlacement(i: number, j: number): CellPlacement | undefined {
-      return this.cellPlacement.find(o => o.x == i && o.y == j);
+    findPlacement(i: number, j: number): CellPlacement | null {
+      return this.cellPlacement.find(o => o.x == i && o.y == j) ?? null;
     },
     findPlacementFromConnection(connection: CellPlacement) {
       if (
@@ -925,19 +817,18 @@ export default Vue.extend({
         return [];
       }
       return [
-        this.findPlacement(connection.x[0], connection.y[0]),
-        this.findPlacement(connection.x[1], connection.y[1])
+        this.findPlacement(connection.x[0], connection.y[0]) ?? null,
+        this.findPlacement(connection.x[1], connection.y[1]) ?? null
       ];
     },
-    findPylonConnection(pylon: CellPlacement | undefined) {
+    findPylonConnection(pylon: CellPlacement) {
       if (!pylon) return [];
       return this.cellPlacement.filter(
         p =>
           p.text == "connection" &&
           typeof p.x != "number" &&
           typeof p.y != "number" &&
-          ((pylon.x == p.x[0] && pylon.y == p.y[0]) ||
-            (pylon.x == p.x[1] && pylon.y == p.y[1]))
+          ((pylon.x == p.x[0] && pylon.y == p.y[0]) || (pylon.x == p.x[1] && pylon.y == p.y[1]))
       );
     },
     findConnection(p1: CellPlacement, p2: CellPlacement) {
@@ -977,14 +868,8 @@ export default Vue.extend({
       });
     },
     setConnection() {
-      const p1 = this.findPlacement(
-        this.connection[0][0],
-        this.connection[0][1]
-      );
-      const p2 = this.findPlacement(
-        this.connection[1][0],
-        this.connection[1][1]
-      );
+      const p1 = this.findPlacement(this.connection[0][0], this.connection[0][1]);
+      const p2 = this.findPlacement(this.connection[1][0], this.connection[1][1]);
       if (!(p1 && p2) || (p1.text != "P" && p2.text != "P")) {
         return;
       }
@@ -994,9 +879,7 @@ export default Vue.extend({
       this.cellPlacement.splice(this.cellPlacement.indexOf(c), 1);
       this.hoverLinkItem(null);
     },
-    convertPlacementToInference(
-      placement: CellPlacement | null | undefined
-    ): InferenceArea | null {
+    convertPlacementToInference(placement: CellPlacement | null | undefined): InferenceArea | null {
       if (!placement) {
         return null;
       }
@@ -1029,14 +912,12 @@ export default Vue.extend({
     disableShortcut(): boolean {
       return this.showNamingDialog || this.showShareDialog;
     },
-    placementOverview(): any {
+    placementOverview(): Record<string, Record<string, number>> {
       const pylon = this.cellPlacement.filter(c => c.text === "P");
       const storage = this.cellPlacement.filter(c => c.text === "S");
       const disperser = this.cellPlacement.filter(c => c.text === "D");
       const collector = this.cellPlacement.filter(c => c.text === "C");
-      const horticraftingStation = this.cellPlacement.filter(
-        c => c.text === "H"
-      );
+      const horticraftingStation = this.cellPlacement.filter(c => c.text === "H");
       return {
         pylon: this.splitOverviewColor(pylon),
         storage: this.splitOverviewColor(storage),
@@ -1048,17 +929,13 @@ export default Vue.extend({
     selectedOrHoveringConnection() {
       let placement: CellPlacement[] = [];
       if (this.isSingleSelection()) {
-        const selectPlacement = this.findPlacement(
-          this.selection[0][0],
-          this.selection[0][1]
-        );
-        placement.push(...this.findPylonConnection(selectPlacement));
+        const selectPlacement = this.findPlacement(this.selection[0][0], this.selection[0][1]);
+        if (selectPlacement) {
+          placement.push(...this.findPylonConnection(selectPlacement));
+        }
       }
 
-      const hoverPlacement = this.findPlacement(
-        this.hoveringCell[0],
-        this.hoveringCell[1]
-      );
+      const hoverPlacement = this.findPlacement(this.hoveringCell[0], this.hoveringCell[1]);
 
       if (hoverPlacement) {
         placement.push(...this.findPylonConnection(hoverPlacement));
@@ -1070,27 +947,20 @@ export default Vue.extend({
     selectedOrHoveringPlacement() {
       let placement: CellPlacement[] = [];
       if (this.isSingleSelection()) {
-        const selectPlacement = this.findPlacement(
-          this.selection[0][0],
-          this.selection[0][1]
-        );
+        const selectPlacement = this.findPlacement(this.selection[0][0], this.selection[0][1]);
         if (selectPlacement) {
           placement.push(selectPlacement);
-        }
-
-        this.findPylonConnection(selectPlacement).forEach(con => {
-          this.findPlacementFromConnection(con).forEach(e => {
-            if (e) {
-              placement.push(e);
-            }
+          this.findPylonConnection(selectPlacement).forEach(con => {
+            this.findPlacementFromConnection(con).forEach(e => {
+              if (e) {
+                placement.push(e);
+              }
+            });
           });
-        });
+        }
       }
 
-      const hoverPlacement = this.findPlacement(
-        this.hoveringCell[0],
-        this.hoveringCell[1]
-      );
+      const hoverPlacement = this.findPlacement(this.hoveringCell[0], this.hoveringCell[1]);
       if (hoverPlacement) {
         placement.push(hoverPlacement);
 
@@ -1112,13 +982,13 @@ export default Vue.extend({
     stringifyCellPlacement(): string {
       return JSON.stringify(this.cellPlacement);
     },
-    selectedPlacement(): any {
+    selectedPlacement(): CellPlacement[] {
       if (!(this.selection[0] && this.selection[1])) {
         return [];
       }
-      return generateSelectedCell(this.selection)
+      return (generateSelectedCell(this.selection)
         .map(c => this.findPlacement(c[0], c[1]))
-        .filter(c => !!c && c.text != "connection");
+        .filter(c => !!c) as CellPlacement[]).filter(c => !!c && c.text != "connection");
     },
     inferenceAreas() {
       const inference: InferenceArea[] = [];
@@ -1174,14 +1044,8 @@ export default Vue.extend({
           connections = this.cellPlacement.filter(p => p.text == "connection");
         }
       }
-      const placementHover = this.findPlacement(
-        this.hoveringCell[0],
-        this.hoveringCell[1]
-      );
-      const placementSelection = this.findPlacement(
-        this.selection[0]?.[0],
-        this.selection[0]?.[1]
-      );
+      const placementHover = this.findPlacement(this.hoveringCell[0], this.hoveringCell[1]);
+      const placementSelection = this.findPlacement(this.selection[0]?.[0], this.selection[0]?.[1]);
       if (placementHover) {
         connections.push(...this.findPylonConnection(placementHover));
       }

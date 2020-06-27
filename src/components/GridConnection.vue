@@ -1,15 +1,7 @@
 <template>
   <svg :style="svgElementStyle">
-    <line
-      v-bind="getConnectionStyle(c, true)"
-      v-for="(c, i) in connections"
-      :key="`connection-${i}`"
-    />
-    <line
-      v-bind="getConnectionStyle(c, false)"
-      v-for="(c, i) in connections"
-      :key="`connection-border-${i}`"
-    />
+    <line v-bind="getConnectionStyle(c, true)" v-for="(c, i) in connections" :key="`connection-${i}`" />
+    <line v-bind="getConnectionStyle(c, false)" v-for="(c, i) in connections" :key="`connection-border-${i}`" />
     <line
       style="stroke:rgb(0,0,0);stroke-width:4"
       v-bind="getConnectingLineStyle()"
@@ -24,10 +16,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import {
-  calculateCellPosition,
-  calculateAreaPixelSize
-} from "@/utils/cell-calc";
+import { calculateCellPosition, calculateAreaPixelSize } from "@/utils/cell-calc";
 import { CellPlacement } from "../types/CellPlacement";
 export default Vue.extend({
   name: "GridConnection",
@@ -93,11 +82,7 @@ export default Vue.extend({
         x1: pos1[1] + this.size / 2,
         y2: pos2[0] + this.size / 2,
         x2: pos2[1] + this.size / 2,
-        opacity: this.selectConntect.find(
-          sc => JSON.stringify(c) == JSON.stringify(sc)
-        )
-          ? 1
-          : this.connectionAlpha,
+        opacity: this.selectConntect.find(sc => JSON.stringify(c) == JSON.stringify(sc)) ? 1 : this.connectionAlpha,
         style: isBorder
           ? `stroke:black ;stroke-width:4`
           : `stroke:${this.lineColor[c.color ?? -1] ?? "red"};stroke-width:2`

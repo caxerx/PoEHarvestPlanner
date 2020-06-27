@@ -20,10 +20,7 @@ export function calculateCellPosition(cell: number[], size: number) {
 }
 
 export function findAreaTopLeft(area: number[][]) {
-  return [
-    area[0][0] > area[1][0] ? area[1][0] : area[0][0],
-    area[0][1] > area[1][1] ? area[1][1] : area[0][1],
-  ];
+  return [area[0][0] > area[1][0] ? area[1][0] : area[0][0], area[0][1] > area[1][1] ? area[1][1] : area[0][1]];
 }
 
 export function generateSelectedCell(area: number[][]) {
@@ -42,19 +39,11 @@ export function generateSelectedCell(area: number[][]) {
   return cells;
 }
 
-export function calcMoveCell(
-  p1: number,
-  p2: number,
-  move: number,
-  cell: number
-) {
+export function calcMoveCell(p1: number, p2: number, move: number, cell: number) {
   if (move > 0) {
     const movedCell = Math.max(p1, p2) + move;
     if (movedCell > cell) {
-      return [
-        p1 + (move - (movedCell - cell)),
-        p2 + (move - (movedCell - cell)),
-      ];
+      return [p1 + (move - (movedCell - cell)), p2 + (move - (movedCell - cell))];
     }
     return [p1 + move, p2 + move];
   } else {
