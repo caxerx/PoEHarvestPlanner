@@ -29,6 +29,12 @@ When you have selected some element, the right panel will show the list of eleme
 ### Clear All
 To clear all element on board, you can use `Ctrl + A` to select all element on board. Then press `Delete` to clear all the element.
 
+## Element Clipboard
+### Copy or Cut
+To copy or cut the element, select the area you want to do so and press `Ctrl + C` to copy and `Ctrl + X` to cut.
+### Paste
+To paste the element, select the cell you want to paste. Then press `Ctrl + V` to paste. The top-left of the selected area will be the base position of pasting.
+
 ## Connect Element
 To connect two element, one of them must be a Pylon. Also, a Pylon cannot connect to more than 4 element.
 ### With mouse drag
