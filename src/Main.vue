@@ -238,7 +238,7 @@
       </v-card>
     </v-dialog>
     <v-dialog max-width="500" v-model="showHelpDialog">
-      <v-card>
+      <v-card class="pb-3">
         <v-card-title>
           Help
         </v-card-title>
@@ -562,6 +562,24 @@
                 </template>
               </v-virtual-scroll>
             </v-card>
+
+            <v-subheader class="my-3">Set Color</v-subheader>
+            <v-card>
+              <v-card-text>
+                <v-row align="center" justify="center" no-gutters>
+                  <v-col cols="auto" class="mx-2"
+                    ><v-btn :color="btnColor[0]" @click="setPlacementColor(0)">Wild</v-btn></v-col
+                  >
+                  <v-col cols="auto" class="mx-2"
+                    ><v-btn light :color="btnColor[1]" @click="setPlacementColor(1)">Vivid</v-btn></v-col
+                  >
+                  <v-col cols="auto" class="mx-2"
+                    ><v-btn :color="btnColor[2]" @click="setPlacementColor(2)">Primal</v-btn></v-col
+                  >
+                </v-row>
+              </v-card-text>
+            </v-card>
+
             <div
               v-if="
                 isSingleSelection() &&
@@ -628,7 +646,13 @@ import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import CountTable from "@/components/CountTable.vue";
 import Help from "@/components/Help.vue";
 import { CellPlacement } from "@/types/CellPlacement";
-import { generateSelectedCell, calcMoveCell, isOutOfRange } from "@/utils/cell-calc";
+import {
+  generateSelectedCell,
+  calcMoveCell,
+  isOutOfRange,
+  findAreaTopLeft,
+  calculateAreaSize
+} from "@/utils/cell-calc";
 import { isSeed } from "@/utils/placement-util";
 import { InferenceArea } from "./types/CellPlacement";
 import Layout from "@/layout/harvest-layout.json";
@@ -717,6 +741,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      placementClipboard: [] as (CellPlacement | null)[][],
       shareLoading: false,
       linkFilterOptions: [
         {
@@ -766,6 +791,7 @@ export default Vue.extend({
         H: "Horticrafting Station"
       } as Record<string, string>,
       color: ["purple--text", "yellow--text", "blue--text"],
+      btnColor: ["purple", "yellow", "blue"],
       selectingArea: [] as number[][],
       connectingPoints: [] as number[][],
       linkHovering: [] as number[],
@@ -784,6 +810,31 @@ export default Vue.extend({
     };
   },
   methods: {
+    pastePlacement() {
+      const topLeft = findAreaTopLeft(this.selection);
+      for (let i = 0; i < this.placementClipboard.length; i++) {
+        for (let j = 0; j < this.placementClipboard[i].length; j++) {
+          const placementToPaste = this.placementClipboard[i][j];
+          if (placementToPaste) {
+            this.addPlacement({ ...placementToPaste, x: topLeft[0] + i, y: topLeft[1] + j });
+          } else {
+            this.removePlacement(topLeft[0] + i, topLeft[1] + j);
+          }
+        }
+      }
+    },
+    copyAreaPlacement() {
+      const topLeft = findAreaTopLeft(this.selection);
+      const selectedSize = calculateAreaSize(this.selection);
+      const placementMatrix: (CellPlacement | null)[][] = [];
+      for (let i = 0; i < selectedSize[0]; i++) {
+        placementMatrix[i] = [];
+        for (let j = 0; j < selectedSize[1]; j++) {
+          placementMatrix[i][j] = this.findPlacement(topLeft[0] + i, topLeft[1] + j);
+        }
+      }
+      this.$set(this, "placementClipboard", placementMatrix);
+    },
     resetSetting() {
       this.settings = { ...defaultSettings };
     },
@@ -908,6 +959,22 @@ export default Vue.extend({
       );
     },
     moveListener(e: KeyboardEvent) {
+      if (e.keyCode == 67 && e.ctrlKey) {
+        this.copyAreaPlacement();
+        return;
+      }
+
+      if (e.keyCode == 88 && e.ctrlKey) {
+        this.copyAreaPlacement();
+        this.clearPlacement();
+        return;
+      }
+
+      if (e.keyCode == 86 && e.ctrlKey) {
+        this.pastePlacement();
+        return;
+      }
+
       if (e.keyCode == 17 && this.isSingleSelection() && !this.isCtrlConnect) {
         this.isCtrlConnect = true;
         this.connectingPoints = [this.selection[0], this.selection[0]];
@@ -949,6 +1016,7 @@ export default Vue.extend({
       if (e.keyCode == 17 && this.isCtrlConnect) {
         this.isCtrlConnect = false;
         this.connectingPoints = [];
+        return;
       }
 
       if (e.keyCode == 90 && e.ctrlKey) {
@@ -964,6 +1032,14 @@ export default Vue.extend({
         this.selectingArea = [];
         return;
       }
+    },
+    setPlacementColor(color: number) {
+      generateSelectedCell(this.selection).forEach(i => {
+        const placement = this.findPlacement(i[0], i[1]);
+        if (placement) {
+          placement.color = color;
+        }
+      });
     },
     clearPlacement() {
       generateSelectedCell(this.selection).forEach(i => {
@@ -1044,7 +1120,7 @@ export default Vue.extend({
     addPlacement(placement: CellPlacement) {
       const index = this.cellPlacement.findIndex(i => i.x == placement.x && i.y == placement.y);
       if (index >= 0) {
-        this.cellPlacement.splice(index, 1);
+        this.removePlacement(+placement.x, +placement.y);
       }
       this.cellPlacement.push(placement);
     },

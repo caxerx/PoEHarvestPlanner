@@ -1,6 +1,11 @@
 <template>
   <div>
-    <component :is="details ? 'v-subheader' : 'v-subheader'" v-for="(text, i) in shortcut" :key="i">
+    <component
+      :is="details ? 'v-subheader' : 'v-subheader'"
+      v-for="(text, i) in shortcut"
+      :key="i"
+      style="height: inherit"
+    >
       {{ text }}
     </component>
     <template v-if="details">
@@ -28,6 +33,9 @@ export default Vue.extend({
         "Right Click and drag / Ctrl + Right Click: Connect Pylon",
         "Ctrl + A: Select All",
         "Ctrl + Z: Undo",
+        "Ctrl + C: Copy Selection Area to Clipboard",
+        "Ctrl + X: Cut Selection Area to Clipboard",
+        "Ctrl + V: Paste Clipboard",
         "Esc: Cancel Select",
         "Delete: Delete Selected Item",
         "Arrow Key: Move Selection Area (1 cell)",

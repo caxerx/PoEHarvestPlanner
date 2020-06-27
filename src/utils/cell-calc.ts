@@ -1,4 +1,3 @@
-import { CellPlacement } from "../types/CellPlacement";
 export function calculateAreaSize(area: number[][]) {
   let [x1, y1] = area[0];
   let [x2, y2] = area[1];

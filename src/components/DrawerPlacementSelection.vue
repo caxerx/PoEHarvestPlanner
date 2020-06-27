@@ -31,7 +31,7 @@ export default Vue.extend({
   },
   methods: {
     keyboardListener(e: KeyboardEvent) {
-      if (this.disablePlacementShortcout) {
+      if (this.disablePlacementShortcout || e.ctrlKey) {
         return;
       }
       if (e.keyCode == 18) {
