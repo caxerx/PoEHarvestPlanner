@@ -1091,9 +1091,6 @@ export default Vue.extend({
         return;
       }
       generateSelectedCell(selectedArea).forEach(i => {
-        if (!this.checkHoverable(i[0], i[1])) {
-          return;
-        }
         this.addPlacement({
           x: i[0],
           y: i[1],
@@ -1118,6 +1115,18 @@ export default Vue.extend({
       this.hoverLinkItem(null);
     },
     addPlacement(placement: CellPlacement) {
+      if (typeof placement.x === "number" && typeof placement.y === "number") {
+        if (!this.checkHoverable(+placement.x, +placement.y)) {
+          return;
+        }
+        if (placement.x > this.row || placement.x < 1) {
+          return;
+        }
+
+        if (placement.y > this.col || placement.y < 1) {
+          return;
+        }
+      }
       const index = this.cellPlacement.findIndex(i => i.x == placement.x && i.y == placement.y);
       if (index >= 0) {
         this.removePlacement(+placement.x, +placement.y);
