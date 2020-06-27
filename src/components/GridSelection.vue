@@ -63,25 +63,25 @@ export default Vue.extend({
   },
   methods: {
     async selectStart(evt: MouseEvent) {
-      console.log(evt);
+      if (evt.ctrlKey) {
+        if (evt.button == 2) {
+          this.$emit("connect", this.hoveringCell);
+        }
+      } else {
+        if (evt.button == 0) {
+          this.$set(this.selectingArea, 0, this.hoveringCell);
+          this.$set(this.selectingArea, 1, this.hoveringCell);
 
-      if (evt.button == 0) {
-        this.$set(this.selectingArea, 0, this.hoveringCell);
-        this.$set(this.selectingArea, 1, this.hoveringCell);
+          this.selectionMode = true;
+        }
+        if (evt.button == 2) {
+          this.$set(this.selectingArea, 0, this.hoveringCell);
+          this.$set(this.selectingArea, 1, this.hoveringCell);
 
-        this.selectionMode = true;
-      }
-      if (evt.button == 2 && !evt.ctrlKey) {
-        this.$set(this.selectingArea, 0, this.hoveringCell);
-        this.$set(this.selectingArea, 1, this.hoveringCell);
-
-        this.$set(this.connectionPoint, 0, this.hoveringCell);
-        this.$set(this.connectionPoint, 1, this.hoveringCell);
-        this.connectionMode = true;
-      }
-
-      if (evt.button == 2 && evt.ctrlKey) {
-        this.$emit("connect", this.hoveringCell);
+          this.$set(this.connectionPoint, 0, this.hoveringCell);
+          this.$set(this.connectionPoint, 1, this.hoveringCell);
+          this.connectionMode = true;
+        }
       }
     },
     async selectStop(evt: MouseEvent) {

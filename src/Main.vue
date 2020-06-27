@@ -1349,9 +1349,7 @@ export default Vue.extend({
         if (connectingPlacement) {
           connections.push(...this.findPylonConnection(connectingPlacement));
         }
-        return connections;
-      }
-      if (this.settings.pylon.alwaysShowLink) {
+      } else if (this.settings.pylon.alwaysShowLink) {
         if (typeof this.settings.linkFilter === "number") {
           connections = this.cellPlacement
             .filter(p => p.text == "connection")
