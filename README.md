@@ -58,6 +58,7 @@ Be aware of that both auto-save and Profile Library is saved in local. If you cl
 You can share your plan by clicking the "Share" icon on the top-right of the planner. The link can also be used to save your plan elsewhere.
 
 # Planned Feature
+- Performance Improvement
 ## Feature
 - Pylon Connection (Deployed)
 - Share link (Deployed)
