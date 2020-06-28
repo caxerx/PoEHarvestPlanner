@@ -1,10 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer app width="300" permanent>
-      <DrawerPlacementSelection
-        @place="placeItem"
-        :disablePlacementShortcout="disableShortcut"
-      ></DrawerPlacementSelection>
+      <DrawerPlacementSelection></DrawerPlacementSelection>
     </v-navigation-drawer>
     <v-app-bar app style="z-index: 100">
       <v-btn @click="undo" :disabled="lastStep.length <= 0">
@@ -263,230 +260,7 @@
       </v-card>
     </v-dialog>
     <v-dialog max-width="800" v-model="showSettingDialog" scrollable>
-      <v-card>
-        <v-card-title>
-          Settings
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon @click="resetSetting" v-bind="attrs" v-on="on"><v-icon>mdi-autorenew</v-icon></v-btn>
-            </template>
-            <span>Reset Setting</span>
-          </v-tooltip>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text class="pa-0">
-          <div class="px-5">
-            <v-row class="pt-3 pl-3">
-              <strong class="title">General</strong>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-switch label="Greyscale Terrain" v-model="settings.greyscaleTerrain" hide-details></v-switch> </v-col
-            ></v-row>
-            <v-col>
-              <v-switch label="Always Show Connection" v-model="settings.pylon.alwaysShowLink" hide-details></v-switch>
-            </v-col>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Connection Line Opacity: ${settings.linkOpacity}%`"
-                  v-model="settings.linkOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-          </div>
-          <v-divider></v-divider>
-
-          <div class="px-5">
-            <v-row class="pt-3 pl-3">
-              <strong class="title">Pylon</strong>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-switch
-                  label="Always Show Pylon Area"
-                  v-model="settings.pylon.alwaysShowArea"
-                  hide-details
-                ></v-switch>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Border Opacity: ${settings.pylon.areaBorderOpacity}%`"
-                  v-model="settings.pylon.areaBorderOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Background Opacity: ${settings.pylon.areaBackgroundOpacity}%`"
-                  v-model="settings.pylon.areaBackgroundOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Element Opacity: ${settings.pylon.placementOpacity}%`"
-                  v-model="settings.pylon.placementOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-          </div>
-
-          <v-divider></v-divider>
-
-          <div class="px-5">
-            <v-row class="pt-3 pl-3">
-              <strong class="title">Collector</strong>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-switch
-                  label="Always Show Collector Area"
-                  v-model="settings.collector.alwaysShowArea"
-                  hide-details
-                ></v-switch>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Border Opacity: ${settings.collector.areaBorderOpacity}%`"
-                  v-model="settings.collector.areaBorderOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Background Opacity: ${settings.collector.areaBackgroundOpacity}%`"
-                  v-model="settings.collector.areaBackgroundOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Element Opacity: ${settings.collector.placementOpacity}%`"
-                  v-model="settings.collector.placementOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-          </div>
-          <v-divider></v-divider>
-          <div class="px-5">
-            <v-row class="pt-3 pl-3">
-              <strong class="title">Disperser</strong>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-switch
-                  label="Always Show Disperser Area"
-                  v-model="settings.disperser.alwaysShowArea"
-                  hide-details
-                ></v-switch> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Border Opacity: ${settings.disperser.areaBorderOpacity}%`"
-                  v-model="settings.disperser.areaBorderOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Area Background Opacity: ${settings.disperser.areaBackgroundOpacity}%`"
-                  v-model="settings.disperser.areaBackgroundOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Element Opacity: ${settings.disperser.placementOpacity}%`"
-                  v-model="settings.disperser.placementOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-          </div>
-          <v-divider></v-divider>
-          <div class="px-5">
-            <v-row class="pt-3 pl-3">
-              <strong class="title">Other Element</strong>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Tier 1 Seed Opacity ${settings.seed.tier1Opacity}%`"
-                  persistent-hint
-                  v-model="settings.seed.tier1Opacity"
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Tier 2 Seed Opacity ${settings.seed.tier2Opacity}%`"
-                  v-model="settings.seed.tier2Opacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Tier 3 Seed Opacity ${settings.seed.tier3Opacity}%`"
-                  v-model="settings.seed.tier3Opacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Tier 4 Seed Opacity ${settings.seed.tier4Opacity}%`"
-                  v-model="settings.seed.tier4Opacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Storage Opacity: ${settings.storage.placementOpacity}%`"
-                  v-model="settings.storage.placementOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-            <v-row>
-              <v-col>
-                <v-slider
-                  dense
-                  :hint="`Horticrafting Station Opacity: ${settings.horticraftingStation.placementOpacity}`"
-                  v-model="settings.horticraftingStation.placementOpacity"
-                  persistent-hint
-                ></v-slider> </v-col
-            ></v-row>
-          </div>
-        </v-card-text>
-      </v-card>
+      <SettingPanel></SettingPanel>
     </v-dialog>
     <v-main>
       <v-row>
@@ -641,10 +415,11 @@ import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import CountTable from "@/components/CountTable.vue";
 import Help from "@/components/Help.vue";
+import SettingPanel from "@/components/SettingPanel.vue";
 import { CellPlacement } from "@/types/CellPlacement";
 import {
   generateSelectedCell,
-  calcMoveCell,
+  calculateMoveCell,
   isOutOfRange,
   findAreaTopLeft,
   calculateAreaSize
@@ -655,42 +430,7 @@ import Layout from "@/layout/harvest-layout.json";
 import { getShare, fromShare } from "./utils/link-share";
 import Axios from "axios";
 import moment from "moment";
-const defaultSettings = {
-  pylon: {
-    alwaysShowLink: true,
-    alwaysShowArea: false,
-    areaBorderOpacity: 30,
-    areaBackgroundOpacity: 10,
-    placementOpacity: 60
-  },
-  collector: {
-    alwaysShowArea: true,
-    areaBorderOpacity: 30,
-    areaBackgroundOpacity: 10,
-    placementOpacity: 60
-  },
-  disperser: {
-    alwaysShowArea: false,
-    areaBorderOpacity: 30,
-    areaBackgroundOpacity: 10,
-    placementOpacity: 60
-  },
-  seed: {
-    tier1Opacity: 20,
-    tier2Opacity: 20,
-    tier3Opacity: 40,
-    tier4Opacity: 60
-  },
-  storage: {
-    placementOpacity: 60
-  },
-  horticraftingStation: {
-    placementOpacity: 60
-  },
-  linkFilter: null,
-  linkOpacity: 70,
-  greyscaleTerrain: false
-};
+import { VisualSettings } from "./types/VisualSettings";
 export default Vue.extend({
   props: {
     planData: {
@@ -706,7 +446,8 @@ export default Vue.extend({
     GridConnection,
     PlacementDisplay,
     CountTable,
-    Help
+    Help,
+    SettingPanel
   },
   created() {
     const storedLibrary = localStorage.getItem("library");
@@ -714,13 +455,6 @@ export default Vue.extend({
       this.$set(this, "profileLibrary", JSON.parse(storedLibrary));
     }
 
-    const storedSettings = localStorage.getItem("settings");
-    if (storedSettings) {
-      this.$set(this, "settings", {
-        ...defaultSettings,
-        ...JSON.parse(storedSettings)
-      });
-    }
     document.addEventListener("keydown", this.moveListener);
     document.addEventListener("keyup", this.keyboardListener);
     if (+(localStorage.getItem("version") ?? 0) < 2) {
@@ -797,7 +531,6 @@ export default Vue.extend({
       hoveringCell: [] as number[],
       lastStep: [] as string[],
       nextStep: [] as string[],
-      settings: { ...defaultSettings },
       isUndo: false,
       isRedo: false,
       seed: ["1", "2", "3", "4"],
@@ -830,9 +563,6 @@ export default Vue.extend({
         }
       }
       this.$set(this, "placementClipboard", placementMatrix);
-    },
-    resetSetting() {
-      this.settings = { ...defaultSettings };
     },
     confirmProfile() {
       if (this.confirmMode == 0) {
@@ -984,17 +714,17 @@ export default Vue.extend({
           const point = this.connectingPoints[1];
           if (e.keyCode == 37) {
             moveCell = -moveCell;
-            this.$set(this.connectingPoints[1], 1, calcMoveCell(point[1], point[1], moveCell, this.row)[0]);
+            this.$set(this.connectingPoints[1], 1, calculateMoveCell(point[1], point[1], moveCell, this.row)[0]);
           }
           if (e.keyCode == 38) {
             moveCell = -moveCell;
-            this.$set(this.connectingPoints[1], 0, calcMoveCell(point[0], point[0], moveCell, this.row)[0]);
+            this.$set(this.connectingPoints[1], 0, calculateMoveCell(point[0], point[0], moveCell, this.row)[0]);
           }
           if (e.keyCode == 39) {
-            this.$set(this.connectingPoints[1], 1, calcMoveCell(point[1], point[1], moveCell, this.row)[0]);
+            this.$set(this.connectingPoints[1], 1, calculateMoveCell(point[1], point[1], moveCell, this.row)[0]);
           }
           if (e.keyCode == 40) {
-            this.$set(this.connectingPoints[1], 0, calcMoveCell(point[0], point[0], moveCell, this.row)[0]);
+            this.$set(this.connectingPoints[1], 0, calculateMoveCell(point[0], point[0], moveCell, this.row)[0]);
           }
         } else {
           let [x0, x1, y0, y1] = [
@@ -1005,23 +735,23 @@ export default Vue.extend({
           ];
           if (e.keyCode == 37) {
             moveCell = -moveCell;
-            [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+            [y0, y1] = calculateMoveCell(y0, y1, moveCell, this.row);
             this.$set(this.selectingArea[0], 1, y1);
             this.$set(this.selectingArea[1], 1, y0);
           }
           if (e.keyCode == 38) {
             moveCell = -moveCell;
-            [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+            [x0, x1] = calculateMoveCell(x0, x1, moveCell, this.col);
             this.$set(this.selectingArea[0], 0, x1);
             this.$set(this.selectingArea[1], 0, x0);
           }
           if (e.keyCode == 39) {
-            [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+            [y0, y1] = calculateMoveCell(y0, y1, moveCell, this.row);
             this.$set(this.selectingArea[1], 1, y0);
             this.$set(this.selectingArea[0], 1, y1);
           }
           if (e.keyCode == 40) {
-            [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+            [x0, x1] = calculateMoveCell(x0, x1, moveCell, this.col);
             this.$set(this.selectingArea[1], 0, x0);
             this.$set(this.selectingArea[0], 0, x1);
           }
@@ -1041,11 +771,6 @@ export default Vue.extend({
       }
       if (e.keyCode == 46) {
         this.clearPlacement();
-        return;
-      }
-      if (e.keyCode == 27) {
-        this.selection = [];
-        this.selectingArea = [];
         return;
       }
     },
@@ -1300,17 +1025,20 @@ export default Vue.extend({
     }
   },
   computed: {
+    settings(): VisualSettings {
+      return this.$store.getters.settings;
+    },
     placementOpacity(): Record<string, number> {
       return {
         P: this.settings.pylon.placementOpacity / 100,
         C: this.settings.collector.placementOpacity / 100,
         D: this.settings.disperser.placementOpacity / 100,
-        S: this.settings.storage.placementOpacity / 100,
-        H: this.settings.horticraftingStation.placementOpacity / 100,
-        "1": this.settings.seed.tier1Opacity / 100,
-        "2": this.settings.seed.tier2Opacity / 100,
-        "3": this.settings.seed.tier3Opacity / 100,
-        "4": this.settings.seed.tier4Opacity / 100
+        S: this.settings.storageOpacity / 100,
+        H: this.settings.horticraftingStationOpacity / 100,
+        "1": this.settings.tier1SeedOpacity / 100,
+        "2": this.settings.tier2SeedOpacity / 100,
+        "3": this.settings.tier3SeedOpacity / 100,
+        "4": this.settings.tier4SeedOpacity / 100
       };
     },
     connectingPlacements(): (CellPlacement | null)[] {
@@ -1450,7 +1178,7 @@ export default Vue.extend({
         if (connectingPlacement) {
           connections.push(...this.findPylonConnection(connectingPlacement));
         }
-      } else if (this.settings.pylon.alwaysShowLink) {
+      } else if (this.settings.alwaysShowLink) {
         if (typeof this.settings.linkFilter === "number") {
           connections = this.cellPlacement
             .filter(p => p.text == "connection")

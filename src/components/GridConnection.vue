@@ -1,22 +1,24 @@
 <template>
-  <svg :style="svgElementStyle">
-    <line v-bind="getConnectionStyle(c, true)" v-for="(c, i) in connections" :key="`connection-${i}`" />
-    <line v-bind="getConnectionStyle(c, false)" v-for="(c, i) in connections" :key="`connection-border-${i}`" />
-    <line
-      style="stroke:rgb(0,0,0);stroke-width:4"
-      v-bind="getConnectingLineStyle()"
-      v-if="connecting[0] && connecting[1]"
-    />
-    <line
-      style="stroke:rgb(255,0,0);stroke-width:2"
-      v-bind="getConnectingLineStyle()"
-      v-if="connecting[0] && connecting[1]"
-    />
-  </svg>
+  <div :style="svgDivStyle">
+    <svg>
+      <line v-bind="getConnectionStyle(c, true)" v-for="(c, i) in connections" :key="`connection-${i}`" />
+      <line v-bind="getConnectionStyle(c, false)" v-for="(c, i) in connections" :key="`connection-border-${i}`" />
+      <line
+        style="stroke:rgb(0,0,0);stroke-width:4"
+        v-bind="getConnectingLineStyle()"
+        v-if="connecting[0] && connecting[1]"
+      />
+      <line
+        style="stroke:rgb(255,0,0);stroke-width:2"
+        v-bind="getConnectingLineStyle()"
+        v-if="connecting[0] && connecting[1]"
+      />
+    </svg>
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { calculateCellPosition, calculateAreaPixelSize } from "@/utils/cell-calc";
+import { calculateCellPosition, calculateAreaPixelSize } from "@/utils/style-utils";
 import { CellPlacement } from "../types/CellPlacement";
 export default Vue.extend({
   name: "GridConnection",
@@ -50,7 +52,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    svgElementStyle(): object {
+    svgDivStyle(): object {
       const size = calculateAreaPixelSize(
         [
           [1, 1],
@@ -60,12 +62,7 @@ export default Vue.extend({
       );
       return {
         height: `${size[0]}px`,
-        width: `${size[1]}px`,
-        "pointer-events": "none",
-        "z-index": 8,
-        top: 0,
-        left: 0,
-        position: "absolute"
+        width: `${size[1]}px`
       };
     }
   },
@@ -100,3 +97,14 @@ export default Vue.extend({
   }
 });
 </script>
+<style scoped>
+svg {
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  z-index: 8;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+</style>

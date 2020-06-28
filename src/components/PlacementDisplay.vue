@@ -9,9 +9,11 @@
 <script lang="ts">
 import Vue from "vue";
 import Layout from "@/layout/harvest-layout.json";
-import { calculateCellPosition, isOutOfRange } from "@/utils/cell-calc";
+import { isOutOfRange } from "@/utils/cell-calc";
+
 import { CellPlacement } from "@/types/CellPlacement";
 import { isSeed } from "../utils/placement-util";
+import { calculateCellPosition } from "../utils/style-utils";
 
 export default Vue.extend({
   name: "PlacementDisplay",

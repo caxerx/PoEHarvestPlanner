@@ -24,14 +24,9 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "DrawerPlacementSelection",
-  props: {
-    disablePlacementShortcout: {
-      default: false
-    }
-  },
   methods: {
     keyboardListener(e: KeyboardEvent) {
-      if (this.disablePlacementShortcout || e.ctrlKey) {
+      if (this.disablePlacementShortcut || e.ctrlKey) {
         return;
       }
       if (e.keyCode == 18) {
@@ -70,6 +65,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      disablePlacementShortcut: false,
       keyAllow: [80, 68, 83, 67, 49, 50, 51, 52, 72],
       keyMap: {
         "80": "P",

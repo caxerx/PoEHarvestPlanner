@@ -1,13 +1,13 @@
 <template>
   <div @mousedown="selectStart" @mouseup="selectStop" @contextmenu.prevent>
-    <template v-for="i in row">
+    <template v-for="(column, x) in selectionStyle">
       <div
-        v-for="j in column"
-        :style="cellStyle(i, j)"
-        :key="`column-${i}-${j}`"
+        v-for="(row, y) in column"
+        :style="selectionStyle[x][y]"
+        :key="`selection-${x}-${y}`"
         class="cell-selection"
-        @mouseenter="cellHovered(i, j)"
-        @mouseleave="cellLeaved(i, j)"
+        @mouseenter="cellHovered(x + 1, y + 1)"
+        @mouseleave="cellLeaved(x + 1, y + 1)"
       ></div>
     </template>
   </div>
@@ -15,141 +15,48 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Layout from "@/layout/harvest-layout.json";
-import { calculateCellPosition } from "@/utils/cell-calc";
 
 export default Vue.extend({
   name: "GridSelection",
-  props: {
-    value: {
-      type: Array,
-      default: (): number[][] => []
+  computed: {
+    selectionStyle(): CSSStyleDeclaration[][] {
+      return this.$store.getters.selectionStyle;
     },
-    connecting: {
-      type: Array,
-      default: (): number[][] => []
+    isDragging(): boolean {
+      return this.$store.getters.isDragging;
     },
-    hovering: {
-      type: Array,
-      default: (): number[] => []
-    },
-    selection: {},
-    connection: {},
-    size: { type: [Number], default: 20 },
-    row: { type: [Number], default: 42 },
-    column: { type: [Number], default: 42 },
-    disablePlacementShortcout: {
-      default: false
+    isConnecting(): boolean {
+      return this.$store.getters.isConnecting;
     }
   },
-  created() {
-    document.addEventListener("keyup", this.selectAllListener);
-  },
-  beforeDestroy() {
-    document.removeEventListener("keyup", this.selectAllListener);
-  },
-  data() {
-    return {
-      cellData: Layout,
-      selectionMode: false,
-      connectionMode: false,
-      hoveringCell: [-1, -1],
-      selectingArea: [
-        [-1, -1],
-        [-1, -1]
-      ],
-      connectionPoint: [[-1, -1]]
-    };
-  },
   methods: {
+    cellHovered(x: number, y: number) {
+      this.$store.dispatch("cellHovered", { x, y });
+    },
+    cellLeaved() {
+      this.$store.dispatch("cellLeaved");
+    },
     async selectStart(evt: MouseEvent) {
       if (evt.ctrlKey) {
         if (evt.button == 2) {
-          this.$emit("connect", this.hoveringCell);
+          this.$store.dispatch("cellCtrlRightClicked");
         }
-      } else {
-        if (evt.button == 0) {
-          this.$set(this.selectingArea, 0, this.hoveringCell);
-          this.$set(this.selectingArea, 1, this.hoveringCell);
+        return;
+      }
 
-          this.selectionMode = true;
-        }
-        if (evt.button == 2) {
-          this.$set(this.selectingArea, 0, this.hoveringCell);
-          this.$set(this.selectingArea, 1, this.hoveringCell);
-
-          this.$set(this.connectionPoint, 0, this.hoveringCell);
-          this.$set(this.connectionPoint, 1, this.hoveringCell);
-          this.connectionMode = true;
-        }
+      if (evt.button == 0) {
+        this.$store.dispatch("cellLeftDown");
+      }
+      if (evt.button == 2) {
+        this.$store.dispatch("cellRightDown");
       }
     },
     async selectStop(evt: MouseEvent) {
       if (evt.button == 0) {
-        this.selectionMode = false;
+        this.$store.dispatch("cellLeftUp");
       }
       if (evt.button == 2) {
-        this.connectionMode = false;
-      }
-    },
-    async cellHovered(i: number, j: number) {
-      this.$set(this, "hoveringCell", [i, j]);
-      if (this.selectionMode) {
-        this.$set(this.selectingArea, 1, [i, j]);
-      }
-      if (this.connectionMode) {
-        this.$set(this.connectionPoint, 1, [i, j]);
-      }
-    },
-    async cellLeaved() {
-      this.$set(this, "hoveringCell", [-1, -1]);
-    },
-    selectAllListener(e: KeyboardEvent) {
-      if (this.disablePlacementShortcout) {
-        return;
-      }
-      if (e.keyCode == 65 && e.ctrlKey) {
-        this.$set(this, "selectingArea", [
-          [1, 1],
-          [this.row, this.column]
-        ]);
-        this.$emit("update:selection", this.selectingArea);
-      }
-    },
-    cellStyle(i: number, j: number) {
-      const [xPos, yPos] = calculateCellPosition([i, j], this.size);
-      return {
-        height: `${this.size}px`,
-        width: `${this.size}px`,
-        top: `${xPos}px`,
-        left: `${yPos}px`
-      };
-    }
-  },
-  watch: {
-    hoveringCell(val) {
-      this.$emit("update:hovering", val);
-    },
-    value(val) {
-      this.$set(this, "selectingArea", val);
-    },
-    selectingArea() {
-      this.$emit("input", this.selectingArea);
-    },
-    connecting(val) {
-      this.$set(this, "connectionPoint", val);
-    },
-    connectionPoint() {
-      this.$emit("update:connecting", this.connectionPoint);
-    },
-    selectionMode(val) {
-      if (!val) {
-        this.$emit("update:selection", this.selectingArea);
-      }
-    },
-    connectionMode(val) {
-      if (!val) {
-        this.$emit("update:connection", this.connectionPoint);
+        this.$store.dispatch("cellRightUp");
       }
     }
   }
