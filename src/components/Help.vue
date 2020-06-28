@@ -30,7 +30,7 @@ export default Vue.extend({
       buildNumber: process.env.VUE_APP_BUILD_NUMBER,
       gitHash: process.env.VUE_APP_GIT_HASH,
       shortcut: [
-        "Right Click and drag / Ctrl + Right Click: Connect Pylon",
+        "Right Click and drag / Ctrl + Right Click / Ctrl + Arrow Key: Connect Pylon",
         "Ctrl + A: Select All",
         "Ctrl + Z: Undo",
         "Ctrl + C: Copy Selection Area to Clipboard",

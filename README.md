@@ -41,6 +41,8 @@ To connect two element, one of them must be a Pylon. Also, a Pylon cannot connec
 You can Drag an element to another one with `Right Click` to connect 2 element.
 ### With Ctrl + Click
 Or you can select an element, Hold `Ctrl` and `Right Click` another element to connect them.
+### With Ctrl + Arrow Key
+If you prefer do everything with keyboard. Select an element, hold `Ctrl` then use `Arrow Key` to connect the elements.
 
 ## Disconnect Element
 If you want to remove the connection between 2 elements. Click one of them, then click the "Unlink" icon on the right panel.
@@ -62,7 +64,7 @@ You can share your plan by clicking the "Share" icon on the top-right of the pla
 - Resource Count (Deployed)
 - Keyboard Shortcut (Arrow Key, Set element with keyboard) (Deployed)
 - Plan Library (Deployed)
-- Element Move / Copy / Cut / Paste
+- Element Move / Copy / Cut / Paste (Deployed)
 
 ## UI Improvement
 - Hide seed when connecting pylon (Deployed)

@@ -284,6 +284,9 @@
               <v-col>
                 <v-switch label="Greyscale Terrain" v-model="settings.greyscaleTerrain" hide-details></v-switch> </v-col
             ></v-row>
+            <v-col>
+              <v-switch label="Always Show Connection" v-model="settings.pylon.alwaysShowLink" hide-details></v-switch>
+            </v-col>
             <v-row>
               <v-col>
                 <v-slider
@@ -301,13 +304,6 @@
               <strong class="title">Pylon</strong>
             </v-row>
             <v-row>
-              <v-col>
-                <v-switch
-                  label="Always Show Pylon Link"
-                  v-model="settings.pylon.alwaysShowLink"
-                  hide-details
-                ></v-switch>
-              </v-col>
               <v-col>
                 <v-switch
                   label="Always Show Pylon Area"
@@ -681,9 +677,9 @@ const defaultSettings = {
   },
   seed: {
     tier1Opacity: 20,
-    tier2Opacity: 40,
-    tier3Opacity: 70,
-    tier4Opacity: 100
+    tier2Opacity: 20,
+    tier3Opacity: 40,
+    tier4Opacity: 60
   },
   storage: {
     placementOpacity: 60
@@ -692,7 +688,7 @@ const defaultSettings = {
     placementOpacity: 60
   },
   linkFilter: null,
-  linkOpacity: 50,
+  linkOpacity: 70,
   greyscaleTerrain: false
 };
 export default Vue.extend({
@@ -978,44 +974,64 @@ export default Vue.extend({
       if (e.keyCode == 17 && this.isSingleSelection() && !this.isCtrlConnect) {
         this.isCtrlConnect = true;
         this.connectingPoints = [this.selection[0], this.selection[0]];
+        return;
       }
 
       let moveCell: number = e.shiftKey ? 5 : 1;
       if (this.isSelected()) {
-        let [x0, x1, y0, y1] = [
-          this.selectingArea[0][0],
-          this.selectingArea[1][0],
-          this.selectingArea[0][1],
-          this.selectingArea[1][1]
-        ];
-        if (e.keyCode == 37) {
-          moveCell = -moveCell;
-          [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
-          this.$set(this.selectingArea[0], 1, y1);
-          this.$set(this.selectingArea[1], 1, y0);
-        }
-        if (e.keyCode == 38) {
-          moveCell = -moveCell;
-          [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
-          this.$set(this.selectingArea[0], 0, x1);
-          this.$set(this.selectingArea[1], 0, x0);
-        }
-        if (e.keyCode == 39) {
-          [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
-          this.$set(this.selectingArea[1], 1, y0);
-          this.$set(this.selectingArea[0], 1, y1);
-        }
-        if (e.keyCode == 40) {
-          [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
-          this.$set(this.selectingArea[1], 0, x0);
-          this.$set(this.selectingArea[0], 0, x1);
+        if (this.isCtrlConnect) {
+          this.$set(this.connectingPoints, 1, [this.connectingPoints[1][0], this.connectingPoints[1][1]]);
+          const point = this.connectingPoints[1];
+          if (e.keyCode == 37) {
+            moveCell = -moveCell;
+            this.$set(this.connectingPoints[1], 1, calcMoveCell(point[1], point[1], moveCell, this.row)[0]);
+          }
+          if (e.keyCode == 38) {
+            moveCell = -moveCell;
+            this.$set(this.connectingPoints[1], 0, calcMoveCell(point[0], point[0], moveCell, this.row)[0]);
+          }
+          if (e.keyCode == 39) {
+            this.$set(this.connectingPoints[1], 1, calcMoveCell(point[1], point[1], moveCell, this.row)[0]);
+          }
+          if (e.keyCode == 40) {
+            this.$set(this.connectingPoints[1], 0, calcMoveCell(point[0], point[0], moveCell, this.row)[0]);
+          }
+        } else {
+          let [x0, x1, y0, y1] = [
+            this.selectingArea[0][0],
+            this.selectingArea[1][0],
+            this.selectingArea[0][1],
+            this.selectingArea[1][1]
+          ];
+          if (e.keyCode == 37) {
+            moveCell = -moveCell;
+            [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+            this.$set(this.selectingArea[0], 1, y1);
+            this.$set(this.selectingArea[1], 1, y0);
+          }
+          if (e.keyCode == 38) {
+            moveCell = -moveCell;
+            [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+            this.$set(this.selectingArea[0], 0, x1);
+            this.$set(this.selectingArea[1], 0, x0);
+          }
+          if (e.keyCode == 39) {
+            [y0, y1] = calcMoveCell(y0, y1, moveCell, this.row);
+            this.$set(this.selectingArea[1], 1, y0);
+            this.$set(this.selectingArea[0], 1, y1);
+          }
+          if (e.keyCode == 40) {
+            [x0, x1] = calcMoveCell(x0, x1, moveCell, this.col);
+            this.$set(this.selectingArea[1], 0, x0);
+            this.$set(this.selectingArea[0], 0, x1);
+          }
         }
       }
     },
     keyboardListener(e: KeyboardEvent) {
       if (e.keyCode == 17 && this.isCtrlConnect) {
         this.isCtrlConnect = false;
-        this.connectingPoints = [];
+        this.connection = this.connectingPoints;
         return;
       }
 
