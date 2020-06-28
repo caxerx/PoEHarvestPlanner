@@ -1,3 +1,7 @@
+export function transposeLayout(m: number[][]) {
+  return m[0].map((x, i) => m.map(x => x[i]));
+}
+
 export function calculateAreaSize(area: number[][]) {
   let [x1, y1] = area[0];
   let [x2, y2] = area[1];
@@ -8,15 +12,6 @@ export function calculateAreaSize(area: number[][]) {
     [y1, y2] = [y2, y1];
   }
   return [x2 - x1 + 1, y2 - y1 + 1];
-}
-
-export function calculateAreaPixelSize(area: number[][], size: number) {
-  const areaSize = calculateAreaSize(area);
-  return [areaSize[0] * size - areaSize[0], areaSize[1] * size - areaSize[1]];
-}
-
-export function calculateCellPosition(cell: number[], size: number) {
-  return [(cell[0] - 1) * size - cell[0], (cell[1] - 1) * size - cell[1]];
 }
 
 export function findAreaTopLeft(area: number[][]) {
@@ -39,7 +34,7 @@ export function generateSelectedCell(area: number[][]) {
   return cells;
 }
 
-export function calcMoveCell(p1: number, p2: number, move: number, cell: number) {
+export function calculateMoveCell(p1: number, p2: number, move: number, cell: number) {
   if (move > 0) {
     const movedCell = Math.max(p1, p2) + move;
     if (movedCell > cell) {
