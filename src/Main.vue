@@ -64,7 +64,7 @@
             ><v-icon>mdi-content-save</v-icon></v-btn
           >
         </template>
-        <span>Graden Plan Library</span>
+        <span>Garden Plan Library</span>
       </v-tooltip>
 
       <v-tooltip bottom>
