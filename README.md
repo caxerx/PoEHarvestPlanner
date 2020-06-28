@@ -59,6 +59,7 @@ You can share your plan by clicking the "Share" icon on the top-right of the pla
 
 # Planned Feature
 - Performance Improvement
+- Replace Keyboard Listener keyCode to key
 ## Feature
 - Pylon Connection (Deployed)
 - Share link (Deployed)
