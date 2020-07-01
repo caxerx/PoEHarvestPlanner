@@ -269,7 +269,7 @@ export default Vue.extend({
       this.$store.dispatch("changeGreyscale", greyscale);
     },
     setSetting(area: string | null, key: string, value: boolean | number) {
-      this.$store.commit("setSettingValue", {
+      this.$store.dispatch("updateSetting", {
         area,
         key,
         value

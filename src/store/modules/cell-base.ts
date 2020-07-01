@@ -8,19 +8,16 @@ export default class CellBase extends VuexModule {
   _row = 42;
   _size = 20;
 
+  _placementColor = ["156, 39, 176", "245, 127, 23", "33, 150, 243"];
+  _connectionColor = ["#EA6AFF", "#FF9B43", "#56B4FF"];
+
   _cellColor = {
-    color: [null, "green", "pink", "blue", "b_rown"],
+    color: [null, "green", "pink", "blue", "brown"],
     greyscale: [null, "#303030", "#999999", "#E5E5E5", "#E5E5E5"]
   };
   _cellLayout = Layout;
 
-  _cellStyle: CSSStyleDeclaration[][] = generateCellFromSetting(
-    this._column,
-    this._row,
-    this._size,
-    this._cellLayout,
-    this._cellColor.greyscale
-  );
+  _cellStyle: CSSStyleDeclaration[][] = [];
 
   _selectionStyle: CSSStyleDeclaration[][] = generateSelectionCellFromSetting(this._column, this._row, this._size);
 
@@ -56,5 +53,11 @@ export default class CellBase extends VuexModule {
   }
   get size() {
     return this._size;
+  }
+  get placementColor() {
+    return this._placementColor;
+  }
+  get connectionColor() {
+    return this._connectionColor;
   }
 }

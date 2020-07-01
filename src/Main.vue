@@ -21,13 +21,14 @@
       <v-select
         label="Link Filtering"
         hide-details
-        v-model="settings.linkFilter"
+        :value="settings.linkFilter"
+        @input="updateLinkFilter"
         solo
         :items="linkFilterOptions"
         clearable
         item-text="label"
         item-value="value"
-        v-if="settings.pylon.alwaysShowLink"
+        v-if="settings.alwaysShowLink"
       ></v-select>
       <v-spacer></v-spacer>
 
@@ -539,6 +540,12 @@ export default Vue.extend({
     };
   },
   methods: {
+    updateLinkFilter(value: number) {
+      this.$store.dispatch("updateSetting", {
+        key: "linkFilter",
+        value
+      });
+    },
     pastePlacement() {
       const topLeft = findAreaTopLeft(this.selection);
       for (let i = 0; i < this.placementClipboard.length; i++) {
@@ -827,7 +834,7 @@ export default Vue.extend({
     checkHoverable(i: number, j: number) {
       return Layout[i - 1][j - 1] == 0;
     },
-    setPlacement(selectedArea: number[][], type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H", color?: number) {
+    setPlacement(selectedArea: number[][], type: "P" | "C" | "S" | "D" | "1" | "2" | "3" | "4" | "H", color: number) {
       if (!this.isSelected()) {
         return;
       }
@@ -1234,6 +1241,8 @@ export default Vue.extend({
           this.routerSetting = true;
           await this.$nextTick();
           this.$set(this, "cellPlacement", fromShare(val));
+
+          this.$store.dispatch("setPlacementFromShare", val);
           await this.$nextTick();
           this.routerSetting = false;
         }

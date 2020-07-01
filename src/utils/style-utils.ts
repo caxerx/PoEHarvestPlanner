@@ -1,4 +1,6 @@
 import { calculateAreaSize, findAreaTopLeft } from "./cell-calc";
+import { CellPlacement, CellConnection } from "../types/CellPlacement";
+import { PlacementRender, LineAttributes, LinePosition } from "../types/PlacementRender";
 
 export function calculateAreaPixelSize(area: number[][], size: number) {
   const areaSize = calculateAreaSize(area);
@@ -42,6 +44,69 @@ export function createSelectionArea(selectionArea: number[][], size: number) {
   };
 }
 
+export function createPlacementCell(
+  placement: CellPlacement,
+  size: number,
+  backgroundColor: string[],
+  placementOpacity: Record<string, string>
+): CSSStyleDeclaration {
+  const [xPos, yPos] = calculateCellPosition([+placement.x, +placement.y], size);
+
+  const style = {
+    height: `${size}px`,
+    width: `${size}px`,
+    top: `${xPos}px`,
+    left: `${yPos}px`,
+    backgroundColor: `rgba(${backgroundColor[placement.color ?? -1]}, ${placementOpacity[placement.text]})`,
+    opacity: "1"
+  } as CSSStyleDeclaration;
+
+  // if (
+  //   this.isConnecting &&
+  //   (isSeed(placement) ||
+  //     isOutOfRange([+placement.x, +placement.y], this.connecting[0], 4) ||
+  //     (this.connectingPlacement[0] && this.connectingPlacement[0].text != "P" && placement.text != "P"))
+  // ) {
+  //   style.opacity = this.connectingSeedAlpha;
+  // }
+  return style;
+}
+
+export function createConnectionPosition(c: CellConnection, size: number): LinePosition {
+  const pos1 = calculateCellPosition([c.x[0], c.y[0]], size);
+  const pos2 = calculateCellPosition([c.x[1], c.y[1]], size);
+  return {
+    y1: pos1[0] + size / 2,
+    x1: pos1[1] + size / 2,
+    y2: pos2[0] + size / 2,
+    x2: pos2[1] + size / 2
+  };
+}
+
+export function createConnection(
+  c: CellConnection,
+  size: number,
+  lineColor: string[],
+  connectionAlpha: number,
+  isSelecting: boolean
+): LineAttributes[] {
+  const position = createConnectionPosition(c, size);
+  const opacity = isSelecting ? 1 : connectionAlpha;
+
+  return [
+    {
+      ...position,
+      style: "stroke:black ;stroke-width:4",
+      opacity
+    },
+    {
+      ...position,
+      style: `stroke:${lineColor[c.color]};stroke-width:2`,
+      opacity
+    }
+  ];
+}
+
 export function generateCellFromSetting(
   column: number,
   row: number,
@@ -66,6 +131,40 @@ export function generateSelectionCellFromSetting(column: number, row: number, si
     for (let y = 0; y < row; y++) {
       cellStyle[x].push(createSelectionCell([x + 1, y + 1], size));
     }
+  }
+  return cellStyle;
+}
+
+export function generatePlacmenetCellFromSetting(
+  placement: CellPlacement[],
+  size: number,
+  backgroundColor: string[],
+  placementOpacity: Record<string, string>
+) {
+  const cellStyle: PlacementRender[] = [];
+  for (let i = 0; i < placement.length; i++) {
+    if (placement[i].text == "connection") {
+      continue;
+    }
+
+    cellStyle.push({
+      cellStyle: createPlacementCell(placement[i], size, backgroundColor, placementOpacity),
+      textStyle: {} as CSSStyleDeclaration,
+      text: placement[i].text
+    });
+  }
+  return cellStyle;
+}
+
+export function generateConnectionFromSetting(
+  placement: CellConnection[],
+  size: number,
+  lineColor: string[],
+  connectionAlpha: number
+) {
+  const cellStyle: LineAttributes[] = [];
+  for (let i = 0; i < placement.length; i++) {
+    cellStyle.push(...createConnection(placement[i], size, lineColor, connectionAlpha, false));
   }
   return cellStyle;
 }
