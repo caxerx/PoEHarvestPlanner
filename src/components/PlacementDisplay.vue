@@ -40,12 +40,13 @@ export default Vue.extend({
   data() {
     return {
       cellData: Layout,
-      backgroundColor: ["156, 39, 176", "245, 127, 23", "33, 150, 243"]
+      backgroundColor: ["156, 39, 176", "245, 127, 23", "33, 150, 243", "158, 158, 158", "233, 30, 99", "76, 175, 80"]
     };
   },
   methods: {
     textStyle(placement: CellPlacement) {
       return {
+        "font-size": placement.text.startsWith("E") ? "12px" : null,
         "z-index": this.linkPoint.includes(placement) ? 9 : null
       };
     },

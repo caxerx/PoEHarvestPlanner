@@ -11,7 +11,7 @@
             :height="60"
             width="60"
             @click="placeItem(g.type, i.color)"
-            :class="iIndex == selectedColor ? `select-color` : null"
+            :class="color.indexOf(i.color) == selectedColor ? 'select-color' : null"
           >
             <v-img :src="i.image"></v-img>
           </v-btn>
@@ -82,7 +82,7 @@ export default Vue.extend({
         "52": "4",
         "72": "H"
       } as Record<string, string>,
-      color: ["purple", "yellow", "blue"],
+      color: ["purple", "yellow", "blue", "grey", "pink", "green"],
       selectedColor: 0,
       drawerGroup: [
         {
@@ -244,6 +244,63 @@ export default Vue.extend({
             {
               image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/HarvestWorkbench.png?scale=1",
               color: "blue"
+            }
+          ]
+        },
+        {
+          label: "Bud",
+          type: "E1",
+          item: [
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterWhiteTier1.png?scale=1",
+              color: "grey"
+            },
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterRedTier1.png?scale=1",
+              color: "pink"
+            },
+
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterGreenTier1.png?scale=1",
+              color: "green"
+            }
+          ]
+        },
+        {
+          label: "Flower",
+          type: "E2",
+          item: [
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterWhiteTier2.png?scale=1",
+              color: "grey"
+            },
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterRedTier2.png?scale=1",
+              color: "pink"
+            },
+
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterGreenTier2.png?scale=1",
+              color: "green"
+            }
+          ]
+        },
+        {
+          label: "Blossom",
+          type: "E3",
+          item: [
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterWhiteTier3.png?scale=1",
+              color: "grey"
+            },
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterRedTier3.png?scale=1",
+              color: "pink"
+            },
+
+            {
+              image: "https://web.poecdn.com/image/Art/2DItems/Currency/Harvest/PlantBoosterGreenTier3.png?scale=1",
+              color: "green"
             }
           ]
         }

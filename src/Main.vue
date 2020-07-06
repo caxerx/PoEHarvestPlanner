@@ -428,6 +428,48 @@
           <v-divider></v-divider>
           <div class="px-5">
             <v-row class="pt-3 pl-3">
+              <strong class="title">Seed Enhancer</strong>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-switch
+                  label="Always Show Seed Enhancer Area"
+                  v-model="settings.seedEnhancer.alwaysShowArea"
+                  hide-details
+                ></v-switch>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-slider
+                  dense
+                  :hint="`Area Border Opacity: ${settings.seedEnhancer.areaBorderOpacity}%`"
+                  v-model="settings.seedEnhancer.areaBorderOpacity"
+                  persistent-hint
+                ></v-slider> </v-col
+            ></v-row>
+            <v-row>
+              <v-col>
+                <v-slider
+                  dense
+                  :hint="`Area Background Opacity: ${settings.seedEnhancer.areaBackgroundOpacity}%`"
+                  v-model="settings.seedEnhancer.areaBackgroundOpacity"
+                  persistent-hint
+                ></v-slider> </v-col
+            ></v-row>
+            <v-row>
+              <v-col>
+                <v-slider
+                  dense
+                  :hint="`Element Opacity: ${settings.seedEnhancer.placementOpacity}%`"
+                  v-model="settings.seedEnhancer.placementOpacity"
+                  persistent-hint
+                ></v-slider> </v-col
+            ></v-row>
+          </div>
+          <v-divider></v-divider>
+          <div class="px-5">
+            <v-row class="pt-3 pl-3">
               <strong class="title">Other Element</strong>
             </v-row>
             <v-row>
@@ -675,6 +717,12 @@ const defaultSettings = {
     areaBackgroundOpacity: 10,
     placementOpacity: 60
   },
+  seedEnhancer: {
+    alwaysShowArea: false,
+    areaBorderOpacity: 30,
+    areaBackgroundOpacity: 10,
+    placementOpacity: 60
+  },
   seed: {
     tier1Opacity: 20,
     tier2Opacity: 20,
@@ -784,7 +832,16 @@ export default Vue.extend({
         "2": "Tier 2 Seed",
         "3": "Tier 3 Seed",
         "4": "Tier 4 Seed",
-        H: "Horticrafting Station"
+        H: "Horticrafting Station",
+        "E1,3": "Fortune Bud",
+        "E1,4": "Lifeforce Bud",
+        "E1,5": "Horticrafting Bud",
+        "E2,3": "Fortune Flower",
+        "E2,4": "Lifeforce Flower",
+        "E2,5": "Horticrafting Flower",
+        "E3,3": "Fortune Blossom",
+        "E3,4": "Lifeforce Blossom",
+        "E3,5": "Horticrafting Blossom"
       } as Record<string, string>,
       color: ["purple--text", "yellow--text", "blue--text"],
       btnColor: ["purple", "yellow", "blue"],
@@ -1089,8 +1146,11 @@ export default Vue.extend({
       const placementObj = this.findPlacement(i, j);
       const placement = placementObj?.text;
       const placementColor = placementObj?.color;
+      console.log(placement, placementColor);
       return {
-        name: placement ? this.objectName[placement] : "",
+        name: placement
+          ? this.objectName[placement.startsWith("E") ? `${placement},${placementColor}` : placement]
+          : "",
         color: this.color[placementColor ?? -1]
       };
     },
@@ -1288,6 +1348,16 @@ export default Vue.extend({
           backgroundOpacity: this.settings.collector.areaBackgroundOpacity / 100
         };
       }
+
+      if (placement.text == "E1" || placement.text == "E2" || placement.text == "E3") {
+        return {
+          topLeft: [+placement.x - 5, +placement.y - 5],
+          size: 10,
+          color: placement.color,
+          borderOpacity: this.settings.collector.areaBorderOpacity / 100,
+          backgroundOpacity: this.settings.collector.areaBackgroundOpacity / 100
+        };
+      }
       return null;
     },
     splitOverviewColor(placement: CellPlacement[]) {
@@ -1310,7 +1380,10 @@ export default Vue.extend({
         "1": this.settings.seed.tier1Opacity / 100,
         "2": this.settings.seed.tier2Opacity / 100,
         "3": this.settings.seed.tier3Opacity / 100,
-        "4": this.settings.seed.tier4Opacity / 100
+        "4": this.settings.seed.tier4Opacity / 100,
+        E1: this.settings.seedEnhancer.placementOpacity / 100,
+        E2: this.settings.seedEnhancer.placementOpacity / 100,
+        E3: this.settings.seedEnhancer.placementOpacity / 100
       };
     },
     connectingPlacements(): (CellPlacement | null)[] {
@@ -1437,6 +1510,15 @@ export default Vue.extend({
         inference.push(
           ...(this.cellPlacement
             .filter(p => p.text == "D")
+            .map(p => this.convertPlacementToInference(p))
+            .filter(p => p != null) as InferenceArea[])
+        );
+      }
+
+      if (this.settings.seedEnhancer.alwaysShowArea) {
+        inference.push(
+          ...(this.cellPlacement
+            .filter(p => p.text == "E1" || p.text == "E2" || p.text == "E3")
             .map(p => this.convertPlacementToInference(p))
             .filter(p => p != null) as InferenceArea[])
         );

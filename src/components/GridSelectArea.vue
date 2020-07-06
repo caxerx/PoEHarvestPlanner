@@ -31,7 +31,15 @@ export default Vue.extend({
   data() {
     return {
       seed: ["1", "2", "3", "4"],
-      seedColor: ["156, 39, 176", "245, 127, 23", "33, 150, 243", "255, 255, 255"]
+      seedColor: [
+        "156, 39, 176",
+        "245, 127, 23",
+        "33, 150, 243",
+        "158, 158, 158",
+        "233, 30, 99",
+        "76, 175, 80",
+        "255, 255, 255"
+      ]
     };
   },
   methods: {
@@ -46,9 +54,9 @@ export default Vue.extend({
         width: `${width}px`,
         top: `${xPos}px`,
         left: `${yPos}px`,
-        border: `2px solid rgba(${this.seedColor[ia.color ?? 3]}, ${ia.borderOpacity})`,
-        "box-shadow": `0px 0px 4px rgba(${this.seedColor[ia.color ?? 3]}, ${ia.borderOpacity})`,
-        "background-color": `rgba(${this.seedColor[ia.color ?? 3]}, ${ia.backgroundOpacity})`
+        border: `2px solid rgba(${this.seedColor[ia.color ?? 6]}, ${ia.borderOpacity})`,
+        "box-shadow": `0px 0px 4px rgba(${this.seedColor[ia.color ?? 6]}, ${ia.borderOpacity})`,
+        "background-color": `rgba(${this.seedColor[ia.color ?? 6]}, ${ia.backgroundOpacity})`
       };
     },
     selectionStyle() {
