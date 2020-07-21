@@ -22,26 +22,64 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { CellPlacementRequest } from "../types/CellPlacement";
 export default Vue.extend({
   name: "DrawerPlacementSelection",
   methods: {
+    keyboardListener(e: KeyboardEvent) {
+      if (this.disablePlacementShortcut || e.ctrlKey) {
+        return;
+      }
+      if (e.keyCode == 18) {
+        e.preventDefault();
+        this.selectedColor = (this.selectedColor + 1) % 3;
+        return;
+      }
+      if (e.keyCode == 81) {
+        e.preventDefault();
+        this.selectedColor = 0;
+        return;
+      }
+      if (e.keyCode == 87) {
+        e.preventDefault();
+        this.selectedColor = 1;
+        return;
+      }
+      if (e.keyCode == 69) {
+        e.preventDefault();
+        this.selectedColor = 2;
+        return;
+      }
+      if (this.keyAllow.includes(e.keyCode)) {
+        this.placeItem(this.keyMap[`${e.keyCode}`], this.color[this.selectedColor]);
+      }
+    },
     placeItem(type: string, color: string) {
-      this.$store.dispatch("addCellElement", {
-        text: type,
-        color: this.color.indexOf(color)
-      } as CellPlacementRequest);
-      this.$store.dispatch("regeneratePlacement");
+      this.$emit("place", [type, this.color.indexOf(color)]);
     }
   },
-  computed: {
-    selectedColor(): number {
-      return 0;
-    }
+  created() {
+    window.addEventListener("keyup", this.keyboardListener);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keyup", this.keyboardListener);
   },
   data() {
     return {
+      disablePlacementShortcut: false,
+      keyAllow: [80, 68, 83, 67, 49, 50, 51, 52, 72],
+      keyMap: {
+        "80": "P",
+        "68": "D",
+        "83": "S",
+        "67": "C",
+        "49": "1",
+        "50": "2",
+        "51": "3",
+        "52": "4",
+        "72": "H"
+      } as Record<string, string>,
       color: ["purple", "yellow", "blue"],
+      selectedColor: 0,
       drawerGroup: [
         {
           label: "Pylon (P)",

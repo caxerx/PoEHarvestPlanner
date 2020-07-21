@@ -267,35 +267,11 @@
       <v-row>
         <v-col class="ml-5 mt-2">
           <div class="display-container">
-            <GridSelection
-              v-model="selectingArea"
-              :connecting.sync="connectingPoints"
-              :selection.sync="selection"
-              :connection.sync="connection"
-              :hovering.sync="hoveringCell"
-              :disablePlacementShortcout="disableShortcut"
-              @connect="rightClickConnect"
-            ></GridSelection>
-            <GridSelectArea
-              :selection="selectingArea"
-              :link-hovering="linkHovering"
-              :inference-area="inferenceAreas"
-            ></GridSelectArea>
-            <GridDisplay :greyscale="settings.greyscaleTerrain"></GridDisplay>
-            <GridConnection
-              :connecting="connectingPoints"
-              :connections="pylonConnections"
-              :select-conntect="selectedOrHoveringConnection"
-              :connectionAlpha="settings.linkOpacity / 100"
-            ></GridConnection>
-            <PlacementDisplay
-              :placement="cellPlacementDisplay"
-              :is-connecting="isConnecting"
-              :connecting="connectingPoints"
-              :connecting-placement="connectingPlacements"
-              :link-point="selectedOrHoveringPlacement"
-              :placementOpacity="placementOpacity"
-            ></PlacementDisplay>
+            <GridSelection></GridSelection>
+            <GridSelectArea></GridSelectArea>
+            <GridDisplay></GridDisplay>
+            <GridConnection></GridConnection>
+            <PlacementDisplay></PlacementDisplay>
           </div>
         </v-col>
         <v-col class="mr-3" style="max-height: calc(100vh - 64px); overflow-y: auto;">
@@ -456,8 +432,8 @@ export default Vue.extend({
       this.$set(this, "profileLibrary", JSON.parse(storedLibrary));
     }
 
-    document.addEventListener("keydown", this.moveListener);
-    document.addEventListener("keyup", this.keyboardListener);
+    // document.addEventListener("keydown", this.moveListener);
+    // document.addEventListener("keyup", this.keyboardListener);
     if (+(localStorage.getItem("version") ?? 0) < 2) {
       localStorage.setItem("version", "2");
       this.showHelpDialog = true;
@@ -467,8 +443,8 @@ export default Vue.extend({
     }
   },
   beforeDestroy() {
-    document.removeEventListener("keydown", this.moveListener);
-    document.removeEventListener("keyup", this.keyboardListener);
+    // document.removeEventListener("keydown", this.moveListener);
+    // document.removeEventListener("keyup", this.keyboardListener);
   },
   data() {
     return {

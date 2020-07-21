@@ -40,4 +40,8 @@ export default Vue.extend({
   align-items: center;
   justify-content: center;
 }
+
+.unavailable-cell {
+  opacity: 0.5 !important;
+}
 </style>

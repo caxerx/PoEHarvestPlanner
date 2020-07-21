@@ -1,3 +1,4 @@
+import { CellPlacement } from "../types/CellPlacement";
 export function transposeLayout(m: number[][]) {
   return m[0].map((x, i) => m.map(x => x[i]));
 }
@@ -53,4 +54,10 @@ export function calculateMoveCell(p1: number, p2: number, move: number, cell: nu
 export function isOutOfRange(point: number[], originPoint: number[], size: number) {
   const area = calculateAreaSize([point, originPoint]);
   return area[0] - 1 > size || area[1] - 1 > size;
+}
+
+const areaElement = ["P", "C", "D"];
+
+export function isAreaElement(placement: CellPlacement) {
+  return areaElement.includes(placement.text) && typeof placement.x == "number" && typeof placement.y == "number";
 }

@@ -60,6 +60,30 @@ export default class Settings extends VuexModule {
       "4": this._settings.tier4SeedOpacity / 100
     };
   }
+
+  get areaOpacity(): Record<string, number> {
+    return {
+      P: this._settings.pylon.areaBackgroundOpacity / 100,
+      D: this._settings.disperser.areaBackgroundOpacity / 100,
+      C: this._settings.collector.areaBackgroundOpacity / 100
+    };
+  }
+
+  get areaBorderOpacity(): Record<string, number> {
+    return {
+      P: this._settings.pylon.areaBorderOpacity / 100,
+      D: this._settings.disperser.areaBorderOpacity / 100,
+      C: this._settings.collector.areaBorderOpacity / 100
+    };
+  }
+
+  get alwaysShowBorder(): Record<string, boolean> {
+    return {
+      P: this._settings.pylon.alwaysShowArea,
+      D: this._settings.disperser.alwaysShowArea,
+      C: this._settings.collector.alwaysShowArea
+    };
+  }
 }
 
 Vue.nextTick().then(() => {

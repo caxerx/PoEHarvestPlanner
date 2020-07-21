@@ -23,6 +23,20 @@ export default class SelectionConnectingHovering extends VuexModule {
 
   _renderedSelectionArea: CSSStyleDeclaration | null = null;
 
+  get selectionArea() {
+    return this._selectionArea;
+  }
+
+  get isSingleSelection() {
+    return (
+      this._selectionArea[0][0] == this._selectionArea[1][0] && this._selectionArea[0][1] == this._selectionArea[1][1]
+    );
+  }
+
+  get hasSelectionArea() {
+    return this._selectionArea[0][0] != -1;
+  }
+
   get isDragging() {
     return this._isDragging;
   }
