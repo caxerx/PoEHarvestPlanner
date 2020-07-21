@@ -20,10 +20,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-div {
-  position: relative;
-}
-
 .cell {
   pointer-events: none;
   border: 1px solid rgba(0, 0, 0, 0.5);

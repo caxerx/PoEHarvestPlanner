@@ -1,5 +1,5 @@
 <template>
-  <div style="position:absolute">
+  <div>
     <div :style="renderedSelectionArea" class="area selection" v-if="renderedSelectionArea"></div>
     <div v-for="(a, i) in renderedInferenceArea" :key="i" :style="a" class="area inference"></div>
   </div>
@@ -26,7 +26,7 @@ export default Vue.extend({
 }
 
 .inference {
-  z-index: 7;
+  z-index: 8;
 }
 
 .area {

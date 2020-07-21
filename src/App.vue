@@ -37,5 +37,6 @@ export default Vue.extend({
 <style>
 html {
   user-select: none;
+  background: #121212;
 }
 </style>

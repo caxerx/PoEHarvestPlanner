@@ -4,7 +4,7 @@ import { PlacementRender, LineAttributes, LinePosition } from "../types/Placemen
 
 export function calculateAreaPixelSize(area: number[][], size: number) {
   const areaSize = calculateAreaSize(area);
-  return [areaSize[0] * size - areaSize[0], areaSize[1] * size - areaSize[1]];
+  return [areaSize[0] * size - areaSize[0] + 1, areaSize[1] * size - areaSize[1] + 1];
 }
 
 export function calculateCellPosition(cell: number[], size: number) {

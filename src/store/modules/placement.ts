@@ -102,15 +102,14 @@ export default class Placement extends VuexModule {
   regenerateArea() {
     let filteredPlacement = this._cellPlacement.filter(f => isAreaElement(f));
 
-    filteredPlacement = filteredPlacement.filter(
-      f =>
-        typeof this.context.getters.settings.linkFilter != "number" ||
-        f.color == this.context.getters.settings.linkFilter
-    );
+    // filteredPlacement = filteredPlacement.filter(
+    //   f =>
+    //     typeof this.context.getters.settings.linkFilter != "number" ||
+    //     f.color == this.context.getters.settings.linkFilter
+    // );
 
     filteredPlacement = filteredPlacement.filter(f => this.context.getters.alwaysShowBorder[f.text]);
 
-    // Area
     this.context.commit(
       "setRenderedInferenceArea",
       filteredPlacement

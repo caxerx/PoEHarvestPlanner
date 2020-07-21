@@ -29,6 +29,7 @@ export default Vue.extend({
 .placement-text {
   position: relative;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  /* transform: rotate(45deg); */
 }
 .placement-cell {
   pointer-events: none;
