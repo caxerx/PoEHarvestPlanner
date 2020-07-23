@@ -73,6 +73,10 @@ export default class SelectionConnectingHovering extends VuexModule {
     return this._isConnecting;
   }
 
+  get isConnectingWithCtrl() {
+    return this._isConnectingWithCtrl;
+  }
+
   get renderedConnectablePlacement() {
     return this._renderedConnectablePlacement;
   }
@@ -154,6 +158,11 @@ export default class SelectionConnectingHovering extends VuexModule {
   }
 
   @Mutation
+  setConnectingWithCtrl(connecting: boolean) {
+    this._isConnectingWithCtrl = connecting;
+  }
+
+  @Mutation
   setRenderedSelectionArea(renderedArea: CSSStyleDeclaration | null) {
     this._renderedSelectionArea = renderedArea;
   }
@@ -197,9 +206,6 @@ export default class SelectionConnectingHovering extends VuexModule {
   updateConnecting(connecting: boolean) {
     this.context.commit("setConnecting", connecting);
     if (connecting) {
-      this.context.commit("setSelectionInitialPoint", { x: this._hoveringCell[0], y: this._hoveringCell[1] });
-      this.context.dispatch("updateSelectionSecondPoint", { x: this._hoveringCell[0], y: this._hoveringCell[1] });
-
       const placement = this.context.getters.cellPlacement;
       const foundPlacement = findPlacement(placement, this._connectingPoint[0][0], this._connectingPoint[0][1]);
       if (foundPlacement) {
@@ -338,7 +344,7 @@ export default class SelectionConnectingHovering extends VuexModule {
     if (this._isDragging) {
       this.context.dispatch("updateSelectionSecondPoint", position);
     }
-    if (this._isConnecting) {
+    if (this._isConnecting && !this._isConnectingWithCtrl) {
       this.context.dispatch("updateConnectionSecondPoint", position);
     }
   }
@@ -370,6 +376,8 @@ export default class SelectionConnectingHovering extends VuexModule {
       return;
     }
     this.context.commit("setConnectionInitialPoint", { x: this._hoveringCell[0], y: this._hoveringCell[1] });
+    this.context.commit("setSelectionInitialPoint", { x: this._hoveringCell[0], y: this._hoveringCell[1] });
+    this.context.dispatch("updateSelectionSecondPoint", { x: this._hoveringCell[0], y: this._hoveringCell[1] });
     this.context.dispatch("updateConnecting", true);
   }
 
@@ -397,5 +405,23 @@ export default class SelectionConnectingHovering extends VuexModule {
       x: this.context.getters.column,
       y: this.context.getters.row
     });
+  }
+
+  @Action
+  keyboardCtrlDown() {
+    if (this._isConnecting || this._isDragging || !this.isSingleSelection) {
+      return;
+    }
+    this.context.commit("setConnectionInitialPoint", { x: this._selectionArea[0][0], y: this._selectionArea[0][1] });
+    this.context.commit("setConnectingWithCtrl", true);
+    this.context.dispatch("updateConnecting", true);
+  }
+
+  @Action
+  keyboardCtrlUp() {
+    if (this._isConnectingWithCtrl) {
+      this.context.dispatch("updateConnecting", false);
+      this.context.commit("setConnectingWithCtrl", false);
+    }
   }
 }
