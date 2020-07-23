@@ -1,12 +1,17 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import { CellPlacement, CellConnection, CellPlacementRequest, CellElement } from "../../types/CellPlacement";
 import { fromShare } from "../../utils/link-share";
-import { generatePlacmenetCellFromSetting, generateConnectionFromSetting } from "../../utils/style-utils";
+import {
+  generatePlacmenetCellFromSetting,
+  generateConnectionFromSetting,
+  createInferenceArea
+} from "../../utils/style-utils";
 import { PlacementRender, LineAttributes } from "../../types/PlacementRender";
 import { VisualSettings } from "../../types/VisualSettings";
-import { generateSelectedCell, isAreaElement } from "../../utils/cell-calc";
+import { generateSelectedCell } from "../../utils/cell-calc";
 import { CellPosition } from "../../types/CellBase";
 import { calculateCellPosition, calculateAreaPixelSize } from "../../utils/style-utils";
+import { isAreaElement } from "../../utils/placement-util";
 
 @Module
 export default class Placement extends VuexModule {
@@ -102,12 +107,6 @@ export default class Placement extends VuexModule {
   regenerateArea() {
     let filteredPlacement = this._cellPlacement.filter(f => isAreaElement(f));
 
-    // filteredPlacement = filteredPlacement.filter(
-    //   f =>
-    //     typeof this.context.getters.settings.linkFilter != "number" ||
-    //     f.color == this.context.getters.settings.linkFilter
-    // );
-
     filteredPlacement = filteredPlacement.filter(f => this.context.getters.alwaysShowBorder[f.text]);
 
     this.context.commit(
@@ -115,30 +114,12 @@ export default class Placement extends VuexModule {
       filteredPlacement
         .map(f => f as CellElement)
         .map(cell => {
-          const size = this.context.getters.areaElementSize[cell.text];
-          const leftTop = calculateCellPosition([cell.x - size, cell.y - size], this.context.getters.size);
-          const areaSize = calculateAreaPixelSize(
-            [
-              [cell.x - size, cell.y - size],
-              [cell.x + size, cell.y + size]
-            ],
-            this.context.getters.size
-          );
+          const area = this.context.getters.areaElementSize[cell.text];
+          const size = this.context.getters.size;
           const areaOpacity = this.context.getters.areaOpacity;
           const areaBorderOpacity = this.context.getters.areaBorderOpacity;
-          return {
-            left: `${leftTop[1]}px`,
-            top: `${leftTop[0]}px`,
-            width: `${areaSize[0]}px`,
-            height: `${areaSize[1]}px`,
-            backgroundColor: `rgba(${this.context.getters.placementColor[cell.color]}, ${areaOpacity[cell.text]})`,
-            border: `2px solid rgba(${this.context.getters.placementColor[cell.color]}, ${
-              areaBorderOpacity[cell.text]
-            })`,
-            boxShadow: `0px 0px 4px rgba(${this.context.getters.placementColor[cell.color]}, ${
-              areaBorderOpacity[cell.text]
-            })`
-          } as CSSStyleDeclaration;
+          const color = this.context.getters.placementColor[cell.color];
+          return createInferenceArea(cell, color, areaOpacity[cell.text], areaBorderOpacity[cell.text], area, size);
         })
     );
   }

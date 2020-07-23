@@ -26,7 +26,7 @@ import { CellPlacementRequest } from "../types/CellPlacement";
 export default Vue.extend({
   name: "DrawerPlacementSelection",
   methods: {
-    placeItem(type: string, color: string) {
+    async placeItem(type: string, color: string) {
       this.$store.dispatch("addCellElement", {
         text: type,
         color: this.color.indexOf(color)

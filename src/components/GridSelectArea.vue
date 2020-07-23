@@ -1,6 +1,8 @@
 <template>
   <div>
     <div :style="renderedSelectionArea" class="area selection" v-if="renderedSelectionArea"></div>
+    <div :style="renderedHoveringInferenceArea" class="area inference" v-if="renderedHoveringInferenceArea"></div>
+    <div :style="renderedSelectingInferenceArea" class="area inference" v-if="renderedSelectingInferenceArea"></div>
     <div v-for="(a, i) in renderedInferenceArea" :key="i" :style="a" class="area inference"></div>
   </div>
 </template>
@@ -12,7 +14,13 @@ export default Vue.extend({
     renderedSelectionArea(): CSSStyleDeclaration {
       return this.$store.getters.renderedSelectionArea;
     },
-    renderedInferenceArea(): CSSStyleDeclaration {
+    renderedHoveringInferenceArea(): CSSStyleDeclaration {
+      return this.$store.getters.renderedHoveringInferenceArea;
+    },
+    renderedSelectingInferenceArea(): CSSStyleDeclaration {
+      return this.$store.getters.renderedSelectingInferenceArea;
+    },
+    renderedInferenceArea(): CSSStyleDeclaration[] {
       return this.$store.getters.renderedInferenceArea;
     }
   }

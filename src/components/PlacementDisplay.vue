@@ -8,6 +8,24 @@
     >
       <div class="placement-text" :style="p.textStyle">{{ p.text }}</div>
     </div>
+
+    <div
+      v-for="(p, index) in renderedHoveringPlacement"
+      :style="p.cellStyle"
+      :key="`placement-hovering-${index}`"
+      class="placement-cell"
+    >
+      <div class="placement-text placement-override-text" :style="p.textStyle">{{ p.text }}</div>
+    </div>
+
+    <div
+      v-for="(p, index) in renderedSelectingPlacement"
+      :style="p.cellStyle"
+      :key="`placement-selecting-${index}`"
+      class="placement-cell"
+    >
+      <div class="placement-text placement-override-text" :style="p.textStyle">{{ p.text }}</div>
+    </div>
   </div>
 </template>
 
@@ -20,6 +38,12 @@ export default Vue.extend({
   computed: {
     renderedPlacement(): PlacementRender[] {
       return this.$store.getters.renderedPlacement;
+    },
+    renderedHoveringPlacement(): PlacementRender[] {
+      return this.$store.getters.renderedHoveringPlacement;
+    },
+    renderedSelectingPlacement(): PlacementRender[] {
+      return this.$store.getters.renderedSelectingPlacement;
     }
   }
 });
@@ -31,6 +55,11 @@ export default Vue.extend({
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   /* transform: rotate(45deg); */
 }
+
+.placement-override-text {
+  z-index: 9;
+}
+
 .placement-cell {
   pointer-events: none;
   border: 1px solid rgba(0, 0, 0, 0.5);

@@ -55,9 +55,3 @@ export function isOutOfRange(point: number[], originPoint: number[], size: numbe
   const area = calculateAreaSize([point, originPoint]);
   return area[0] - 1 > size || area[1] - 1 > size;
 }
-
-const areaElement = ["P", "C", "D"];
-
-export function isAreaElement(placement: CellPlacement) {
-  return areaElement.includes(placement.text) && typeof placement.x == "number" && typeof placement.y == "number";
-}

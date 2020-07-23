@@ -1,6 +1,9 @@
 <template>
   <svg>
     <line v-bind="c" v-for="(c, i) in renderedConnection" :key="`connection-${i}`" />
+    <line v-bind="c" v-for="(c, i) in renderedSelectingConnection" :key="`selecting-connection-${i}`" />
+    <line v-bind="c" v-for="(c, i) in renderedHoveringConnection" :key="`hovering-connection-${i}`" />
+    <line v-bind="c" v-for="(c, i) in renderedConnectingConnection" :key="`connecting-connection-${i}`" />
   </svg>
 </template>
 <script lang="ts">
@@ -11,6 +14,15 @@ export default Vue.extend({
   computed: {
     renderedConnection(): LineAttributes[] {
       return this.$store.getters.renderedConnection;
+    },
+    renderedSelectingConnection(): LineAttributes[] {
+      return this.$store.getters.renderedSelectingConnection;
+    },
+    renderedHoveringConnection(): LineAttributes[] {
+      return this.$store.getters.renderedHoveringConnection;
+    },
+    renderedConnectingConnection(): LineAttributes[] {
+      return this.$store.getters.renderedConnectingConnection;
     }
   }
 });

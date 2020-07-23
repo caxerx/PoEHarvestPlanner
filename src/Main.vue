@@ -10,11 +10,12 @@
       <v-row>
         <v-col class="ml-5 mt-2">
           <div class="display-container">
+            <ConnectionFilter class="rotate no-select" :style="divStyle"></ConnectionFilter>
             <GridSelection class="rotate" :style="divStyle"></GridSelection>
-            <GridSelectArea class="rotate" :style="divStyle"></GridSelectArea>
-            <GridConnection class="rotate" :style="divStyle"></GridConnection>
-            <GridDisplay class="rotate" :style="divStyle"></GridDisplay>
-            <PlacementDisplay class="rotate" :style="divStyle"></PlacementDisplay>
+            <GridSelectArea class="rotate no-select" :style="divStyle"></GridSelectArea>
+            <GridConnection class="rotate no-select" :style="divStyle"></GridConnection>
+            <GridDisplay class="rotate no-select" :style="divStyle"></GridDisplay>
+            <PlacementDisplay class="rotate no-select" :style="divStyle"></PlacementDisplay>
           </div>
         </v-col>
       </v-row>
@@ -29,6 +30,7 @@ import GridSelectArea from "@/components/GridSelectArea.vue";
 import DrawerPlacementSelection from "@/components/DrawerPlacementSelection.vue";
 import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
+import ConnectionFilter from "@/components/ConnectionFilter.vue";
 import { calculateAreaPixelSize } from "@/utils/style-utils";
 
 export default Vue.extend({
@@ -44,7 +46,8 @@ export default Vue.extend({
     GridSelectArea,
     DrawerPlacementSelection,
     GridConnection,
-    PlacementDisplay
+    PlacementDisplay,
+    ConnectionFilter
   },
   computed: {
     divStyle(): object {
@@ -76,6 +79,11 @@ export default Vue.extend({
 <style scoped>
 .display-container {
   position: relative;
+}
+
+.no-select {
+  user-select: none;
+  pointer-events: none;
 }
 
 /* .rotate {

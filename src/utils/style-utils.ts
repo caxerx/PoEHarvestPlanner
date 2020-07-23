@@ -1,5 +1,5 @@
 import { calculateAreaSize, findAreaTopLeft } from "./cell-calc";
-import { CellPlacement, CellConnection } from "../types/CellPlacement";
+import { CellPlacement, CellConnection, CellElement } from "../types/CellPlacement";
 import { PlacementRender, LineAttributes, LinePosition } from "../types/PlacementRender";
 
 export function calculateAreaPixelSize(area: number[][], size: number) {
@@ -57,19 +57,52 @@ export function createPlacementCell(
     width: `${size}px`,
     top: `${xPos}px`,
     left: `${yPos}px`,
-    backgroundColor: `rgba(${backgroundColor[placement.color ?? -1]}, ${placementOpacity[placement.text]})`,
+    backgroundColor: `rgba(${backgroundColor[placement.color ?? -1]}, ${placementOpacity[placement.text] ?? 0})`,
     opacity: "1"
   } as CSSStyleDeclaration;
 
-  // if (
-  //   this.isConnecting &&
-  //   (isSeed(placement) ||
-  //     isOutOfRange([+placement.x, +placement.y], this.connecting[0], 4) ||
-  //     (this.connectingPlacement[0] && this.connectingPlacement[0].text != "P" && placement.text != "P"))
-  // ) {
-  //   style.opacity = this.connectingSeedAlpha;
-  // }
   return style;
+}
+
+export function createConnectableFilter(placement: CellPlacement, size: number): CSSStyleDeclaration {
+  const [xPos, yPos] = calculateCellPosition([+placement.x, +placement.y], size);
+
+  const style = {
+    height: `${size}px`,
+    width: `${size}px`,
+    top: `${xPos}px`,
+    left: `${yPos}px`
+  } as CSSStyleDeclaration;
+
+  return style;
+}
+
+export function createInferenceArea(
+  cell: CellElement,
+  color: string,
+  areaOpacity: number,
+  areaBorderOpacity: number,
+  area: number,
+  size: number
+) {
+  const leftTop = calculateCellPosition([cell.x - area, cell.y - area], size);
+  const areaSize = calculateAreaPixelSize(
+    [
+      [cell.x - area, cell.y - area],
+      [cell.x + area, cell.y + area]
+    ],
+    size
+  );
+
+  return {
+    left: `${leftTop[1]}px`,
+    top: `${leftTop[0]}px`,
+    width: `${areaSize[0]}px`,
+    height: `${areaSize[1]}px`,
+    backgroundColor: `rgba(${color}, ${areaOpacity})`,
+    border: `2px solid rgba(${color}, ${areaBorderOpacity})`,
+    boxShadow: `0px 0px 4px rgba(${color}, ${areaBorderOpacity})`
+  } as CSSStyleDeclaration;
 }
 
 export function createConnectionPosition(c: CellConnection, size: number): LinePosition {
@@ -88,7 +121,8 @@ export function createConnection(
   size: number,
   lineColor: string[],
   connectionAlpha: number,
-  isSelecting: boolean
+  isSelecting: boolean,
+  backgroundColor?: string
 ): LineAttributes[] {
   const position = createConnectionPosition(c, size);
   const opacity = isSelecting ? 1 : connectionAlpha;
@@ -96,12 +130,12 @@ export function createConnection(
   return [
     {
       ...position,
-      style: "stroke:black ;stroke-width:4",
+      style: `stroke:${backgroundColor ?? `black`}; stroke-width:4`,
       opacity
     },
     {
       ...position,
-      style: `stroke:${lineColor[c.color]};stroke-width:2`,
+      style: `stroke:${lineColor[c.color]}; stroke-width:2`,
       opacity
     }
   ];
@@ -160,11 +194,12 @@ export function generateConnectionFromSetting(
   placement: CellConnection[],
   size: number,
   lineColor: string[],
-  connectionAlpha: number
+  connectionAlpha: number,
+  backgroundColor?: string
 ) {
   const cellStyle: LineAttributes[] = [];
   for (let i = 0; i < placement.length; i++) {
-    cellStyle.push(...createConnection(placement[i], size, lineColor, connectionAlpha, false));
+    cellStyle.push(...createConnection(placement[i], size, lineColor, connectionAlpha, false, backgroundColor));
   }
   return cellStyle;
 }
