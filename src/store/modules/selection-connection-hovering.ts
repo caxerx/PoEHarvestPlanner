@@ -15,7 +15,7 @@ import {
   findConnectablePlacement
 } from "../../utils/placement-util";
 import { CellElement, CellConnection, CellPlacement } from "../../types/CellPlacement";
-import { LineAttributes, PlacementRender } from "../../types/PlacementRender";
+import { LineAttributes, PlacementRender, PlacementMask } from "../../types/PlacementRender";
 import { createConnection, createConnectableFilter } from "../../utils/style-utils";
 
 @Module
@@ -36,7 +36,7 @@ export default class SelectionConnectingHovering extends VuexModule {
 
   _hoveringCell = [-1, -1];
 
-  _renderedConnectablePlacement: CSSStyleDeclaration[] = [];
+  _renderedConnectablePlacement: PlacementMask[] = [];
 
   _renderedSelectionArea: CSSStyleDeclaration | null = null;
   _renderedConnectingConnection: LineAttributes[] = [];
@@ -120,7 +120,7 @@ export default class SelectionConnectingHovering extends VuexModule {
   }
 
   @Mutation
-  setRenderedConnectablePlacement(placement: CSSStyleDeclaration[]) {
+  setRenderedConnectablePlacement(placement: PlacementMask[]) {
     this._renderedConnectablePlacement = placement;
   }
 

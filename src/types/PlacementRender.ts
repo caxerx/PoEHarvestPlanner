@@ -4,6 +4,13 @@ export interface PlacementRender {
   text: string;
 }
 
+export interface PlacementMask {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface LinePosition {
   x1: number;
   y1: number;

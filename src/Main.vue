@@ -1,21 +1,21 @@
 <template>
   <v-app>
-    <v-navigation-drawer app width="300" permanent>
+    <v-navigation-drawer app width="300" permanent v-if="showDrawer">
       <DrawerPlacementSelection></DrawerPlacementSelection>
     </v-navigation-drawer>
 
-    <v-app-bar app style="z-index: 100"> </v-app-bar>
+    <v-app-bar app style="z-index: 100"></v-app-bar>
 
     <v-main>
       <v-row>
         <v-col class="ml-5 mt-2">
           <div class="display-container">
-            <ConnectionFilter class="rotate no-select" :style="divStyle"></ConnectionFilter>
-            <GridSelection class="rotate" :style="divStyle"></GridSelection>
-            <GridSelectArea class="rotate no-select" :style="divStyle"></GridSelectArea>
-            <GridConnection class="rotate no-select" :style="divStyle"></GridConnection>
-            <GridDisplay class="rotate no-select" :style="divStyle"></GridDisplay>
-            <PlacementDisplay class="rotate no-select" :style="divStyle"></PlacementDisplay>
+            <GridSelection :style="divStyle"></GridSelection>
+            <GridDisplay class="no-select" :style="divStyle"></GridDisplay>
+            <PlacementDisplay class="no-select" :style="divStyle"></PlacementDisplay>
+            <GridConnection class="no-select" :style="divStyle"></GridConnection>
+            <GridSelectArea class="no-select" :style="divStyle"></GridSelectArea>
+            <ConnectionFilter class="no-select" :style="divStyle"></ConnectionFilter>
           </div>
         </v-col>
       </v-row>
@@ -32,6 +32,7 @@ import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import ConnectionFilter from "@/components/ConnectionFilter.vue";
 import { calculateAreaPixelSize } from "@/utils/style-utils";
+import { VisualSettings } from "./types/VisualSettings";
 
 export default Vue.extend({
   props: {
@@ -49,8 +50,16 @@ export default Vue.extend({
     PlacementDisplay,
     ConnectionFilter
   },
+  data() {
+    return {
+      showDrawer: true
+    };
+  },
   computed: {
-    divStyle(): object {
+    rotate(): boolean {
+      return (this.$store.getters.settings as VisualSettings).rotate;
+    },
+    divStyle(): CSSStyleDeclaration {
       const size = calculateAreaPixelSize(
         [
           [1, 1],
@@ -58,12 +67,18 @@ export default Vue.extend({
         ],
         20
       );
-      return {
+      const style = {
         position: "absolute",
         height: `${size[0]}px`,
         width: `${size[1]}px`
-        // margin: `${(Math.sqrt(size[0] ** 2 + size[1] ** 2) - size[0]) / 2}px`
-      };
+      } as CSSStyleDeclaration;
+
+      if (this.rotate) {
+        style.margin = `${(Math.sqrt(size[0] ** 2 + size[1] ** 2) - size[0]) / 2}px`;
+        style.transform = "rotate(-45deg)";
+      }
+
+      return style;
     }
   },
   watch: {
@@ -85,8 +100,4 @@ export default Vue.extend({
   user-select: none;
   pointer-events: none;
 }
-
-/* .rotate {
-  transform: rotate(-45deg);
-} */
 </style>

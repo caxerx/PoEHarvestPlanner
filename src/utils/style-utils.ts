@@ -1,6 +1,6 @@
 import { calculateAreaSize, findAreaTopLeft } from "./cell-calc";
 import { CellPlacement, CellConnection, CellElement } from "../types/CellPlacement";
-import { PlacementRender, LineAttributes, LinePosition } from "../types/PlacementRender";
+import { PlacementRender, LineAttributes, LinePosition, PlacementMask } from "../types/PlacementRender";
 
 export function calculateAreaPixelSize(area: number[][], size: number) {
   const areaSize = calculateAreaSize(area);
@@ -64,17 +64,15 @@ export function createPlacementCell(
   return style;
 }
 
-export function createConnectableFilter(placement: CellPlacement, size: number): CSSStyleDeclaration {
+export function createConnectableFilter(placement: CellPlacement, size: number): PlacementMask {
   const [xPos, yPos] = calculateCellPosition([+placement.x, +placement.y], size);
 
-  const style = {
-    height: `${size}px`,
-    width: `${size}px`,
-    top: `${xPos}px`,
-    left: `${yPos}px`
-  } as CSSStyleDeclaration;
-
-  return style;
+  return {
+    height: size,
+    width: size,
+    x: yPos,
+    y: xPos
+  };
 }
 
 export function createInferenceArea(

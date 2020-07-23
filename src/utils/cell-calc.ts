@@ -1,4 +1,3 @@
-import { CellPlacement } from "../types/CellPlacement";
 export function transposeLayout(m: number[][]) {
   return m[0].map((x, i) => m.map(x => x[i]));
 }

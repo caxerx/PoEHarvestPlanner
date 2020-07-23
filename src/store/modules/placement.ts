@@ -10,7 +10,6 @@ import { PlacementRender, LineAttributes } from "../../types/PlacementRender";
 import { VisualSettings } from "../../types/VisualSettings";
 import { generateSelectedCell } from "../../utils/cell-calc";
 import { CellPosition } from "../../types/CellBase";
-import { calculateCellPosition, calculateAreaPixelSize } from "../../utils/style-utils";
 import { isAreaElement } from "../../utils/placement-util";
 
 @Module

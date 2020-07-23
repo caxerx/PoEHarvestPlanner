@@ -7,7 +7,7 @@ import { isOutOfRange } from "./cell-calc";
  * @deprecated NO!
  */
 export function isSeed(p: CellPlacement) {
-  return true;
+  return p == p;
 }
 
 export function isConnectable(p: CellPlacement) {

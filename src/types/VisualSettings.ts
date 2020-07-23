@@ -6,6 +6,7 @@ export class AreaElementVisualSetting {
 }
 
 export class VisualSettings {
+  rotate = true;
   linkFilter: number | null = null;
   linkOpacity = 70;
   greyscaleTerrain = false;

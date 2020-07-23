@@ -6,7 +6,7 @@
       :key="`placement-${index}`"
       class="placement-cell"
     >
-      <div class="placement-text" :style="p.textStyle">{{ p.text }}</div>
+      <div :class="{ 'placement-text': true, rotate: rotate }" :style="p.textStyle">{{ p.text }}</div>
     </div>
 
     <div
@@ -15,7 +15,9 @@
       :key="`placement-hovering-${index}`"
       class="placement-cell"
     >
-      <div class="placement-text placement-override-text" :style="p.textStyle">{{ p.text }}</div>
+      <div :class="{ 'placement-text': true, 'placement-override-text': true, rotate: rotate }" :style="p.textStyle">
+        {{ p.text }}
+      </div>
     </div>
 
     <div
@@ -24,7 +26,9 @@
       :key="`placement-selecting-${index}`"
       class="placement-cell"
     >
-      <div class="placement-text placement-override-text" :style="p.textStyle">{{ p.text }}</div>
+      <div :class="{ 'placement-text': true, 'placement-override-text': true, rotate: rotate }" :style="p.textStyle">
+        {{ p.text }}
+      </div>
     </div>
   </div>
 </template>
@@ -32,10 +36,14 @@
 <script lang="ts">
 import Vue from "vue";
 import { PlacementRender } from "../types/PlacementRender";
+import { VisualSettings } from "../types/VisualSettings";
 
 export default Vue.extend({
   name: "PlacementDisplay",
   computed: {
+    rotate(): boolean {
+      return (this.$store.getters.settings as VisualSettings).rotate;
+    },
     renderedPlacement(): PlacementRender[] {
       return this.$store.getters.renderedPlacement;
     },
@@ -51,9 +59,8 @@ export default Vue.extend({
 
 <style scoped>
 .placement-text {
-  position: relative;
+  position: fixed;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  /* transform: rotate(45deg); */
 }
 
 .placement-override-text {
@@ -71,7 +78,7 @@ export default Vue.extend({
   justify-content: center;
 }
 
-.unavailable-cell {
-  opacity: 0.5 !important;
+.rotate {
+  transform: rotate(45deg);
 }
 </style>
