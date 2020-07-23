@@ -75,7 +75,7 @@ export function createConnectableFilter(placement: CellPlacement, size: number):
   };
 }
 
-export function createInferenceArea(
+export function createInfluenceArea(
   cell: CellElement,
   color: string,
   areaOpacity: number,

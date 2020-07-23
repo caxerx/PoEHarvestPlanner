@@ -3,7 +3,7 @@ import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import { CellPosition } from "../../types/CellBase";
 import {
   createSelectionArea,
-  createInferenceArea,
+  createInfluenceArea,
   generateConnectionFromSetting,
   generatePlacmenetCellFromSetting
 } from "../../utils/style-utils";
@@ -17,6 +17,7 @@ import {
 import { CellElement, CellConnection, CellPlacement } from "../../types/CellPlacement";
 import { LineAttributes, PlacementRender, PlacementMask } from "../../types/PlacementRender";
 import { createConnection, createConnectableFilter } from "../../utils/style-utils";
+import { findPlacementInArea } from "../../utils/placement-util";
 
 @Module
 export default class SelectionConnectingHovering extends VuexModule {
@@ -36,16 +37,18 @@ export default class SelectionConnectingHovering extends VuexModule {
 
   _hoveringCell = [-1, -1];
 
+  _selectedPlacement: CellPlacement[] = [];
+
   _renderedConnectablePlacement: PlacementMask[] = [];
 
   _renderedSelectionArea: CSSStyleDeclaration | null = null;
   _renderedConnectingConnection: LineAttributes[] = [];
 
-  _renderedHoveringInferenceArea: CSSStyleDeclaration | null = null;
+  _renderedHoveringInfluenceArea: CSSStyleDeclaration | null = null;
   _renderedHoveringConnection: LineAttributes[] = [];
   _renderedHoveringPlacement: PlacementRender[] = [];
 
-  _renderedSelectingInferenceArea: CSSStyleDeclaration | null = null;
+  _renderedSelectingInfluenceArea: CSSStyleDeclaration | null = null;
   _renderedSelectingConnection: LineAttributes[] = [];
   _renderedSelectingPlacement: PlacementRender[] = [];
 
@@ -89,12 +92,12 @@ export default class SelectionConnectingHovering extends VuexModule {
     return this._renderedConnectingConnection;
   }
 
-  get renderedHoveringInferenceArea() {
-    return this._renderedHoveringInferenceArea;
+  get renderedHoveringInfluenceArea() {
+    return this._renderedHoveringInfluenceArea;
   }
 
-  get renderedSelectingInferenceArea() {
-    return this._renderedSelectingInferenceArea;
+  get renderedSelectingInfluenceArea() {
+    return this._renderedSelectingInfluenceArea;
   }
 
   get renderedHoveringConnection() {
@@ -116,6 +119,10 @@ export default class SelectionConnectingHovering extends VuexModule {
   get hoveringCell() {
     if (this._hoveringCell[0] == -1) return null;
     return this._hoveringCell;
+  }
+
+  get selectedPlacement() {
+    return this._selectedPlacement;
   }
 
   @Mutation
@@ -173,13 +180,13 @@ export default class SelectionConnectingHovering extends VuexModule {
   }
 
   @Mutation
-  setRenderedHoveringInferenceArea(renderedArea: CSSStyleDeclaration | null) {
-    this._renderedHoveringInferenceArea = renderedArea;
+  setRenderedHoveringInfluenceArea(renderedArea: CSSStyleDeclaration | null) {
+    this._renderedHoveringInfluenceArea = renderedArea;
   }
 
   @Mutation
-  setRenderedSelectingInferenceArea(renderedArea: CSSStyleDeclaration | null) {
-    this._renderedSelectingInferenceArea = renderedArea;
+  setRenderedSelectingInfluenceArea(renderedArea: CSSStyleDeclaration | null) {
+    this._renderedSelectingInfluenceArea = renderedArea;
   }
 
   @Mutation
@@ -200,6 +207,10 @@ export default class SelectionConnectingHovering extends VuexModule {
   @Mutation
   setRenderedSelectingPlacement(renderedPlacement: PlacementRender[]) {
     this._renderedSelectingPlacement = renderedPlacement;
+  }
+  @Mutation
+  setSelectedPlacement(selectedPlacement: CellPlacement[]) {
+    this._selectedPlacement = selectedPlacement;
   }
 
   @Action
@@ -243,14 +254,14 @@ export default class SelectionConnectingHovering extends VuexModule {
     }
 
     if (!targetPlacement) {
-      this.context.commit(`setRendered${state}InferenceArea`, null);
+      this.context.commit(`setRendered${state}InfluenceArea`, null);
       this.context.commit(`setRendered${state}Connection`, []);
       this.context.commit(`setRendered${state}Placement`, []);
       return;
     }
 
     if (isAreaElement(targetPlacement)) {
-      //Inference Area
+      //Influence Area
       const size = this.context.getters.size;
       const placementColor = this.context.getters.placementColor;
       const areaOpacity = this.context.getters.areaOpacity;
@@ -258,8 +269,8 @@ export default class SelectionConnectingHovering extends VuexModule {
       const areaElementSize = this.context.getters.areaElementSize;
 
       this.context.commit(
-        `setRendered${state}InferenceArea`,
-        createInferenceArea(
+        `setRendered${state}InfluenceArea`,
+        createInfluenceArea(
           targetPlacement as CellElement,
           placementColor[targetPlacement.color],
           areaOpacity[targetPlacement.text],
@@ -269,7 +280,7 @@ export default class SelectionConnectingHovering extends VuexModule {
         )
       );
     } else {
-      this.context.commit(`setRendered${state}InferenceArea`, null);
+      this.context.commit(`setRendered${state}InfluenceArea`, null);
     }
 
     //Connection
@@ -365,9 +376,28 @@ export default class SelectionConnectingHovering extends VuexModule {
     this.context.dispatch("generateSelectionArea");
   }
 
+  @Action({ commit: "setSelectedPlacement" })
+  updateSelectedPlacement() {
+    if (this.hasSelectionArea) {
+      return findPlacementInArea(
+        this.context.getters.cellPlacement,
+        {
+          x: this._selectionArea[0][0],
+          y: this._selectionArea[0][1]
+        },
+        {
+          x: this._selectionArea[1][0],
+          y: this._selectionArea[1][1]
+        }
+      );
+    }
+    return [];
+  }
+
   @Action
   cellLeftUp() {
     this.context.commit("setDragging", false);
+    this.context.dispatch("updateSelectedPlacement");
   }
 
   @Action

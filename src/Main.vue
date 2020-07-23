@@ -18,6 +18,9 @@
             <ConnectionFilter class="no-select" :style="divStyle"></ConnectionFilter>
           </div>
         </v-col>
+        <v-col>
+          <RightPanel></RightPanel>
+        </v-col>
       </v-row>
     </v-main>
   </v-app>
@@ -31,6 +34,7 @@ import DrawerPlacementSelection from "@/components/DrawerPlacementSelection.vue"
 import GridConnection from "@/components/GridConnection.vue";
 import PlacementDisplay from "@/components/PlacementDisplay.vue";
 import ConnectionFilter from "@/components/ConnectionFilter.vue";
+import RightPanel from "@/components/RightPanel.vue";
 import { calculateAreaPixelSize } from "@/utils/style-utils";
 import { VisualSettings } from "./types/VisualSettings";
 
@@ -48,7 +52,8 @@ export default Vue.extend({
     DrawerPlacementSelection,
     GridConnection,
     PlacementDisplay,
-    ConnectionFilter
+    ConnectionFilter,
+    RightPanel
   },
   data() {
     return {

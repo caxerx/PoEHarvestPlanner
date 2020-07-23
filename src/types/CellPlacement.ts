@@ -23,7 +23,7 @@ export interface CellPlacementRequest {
   text: PlacementEnum;
 }
 
-export interface InferenceArea {
+export interface InfluenceArea {
   topLeft: number[];
   size: number;
   color?: number;

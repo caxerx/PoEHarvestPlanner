@@ -4,7 +4,7 @@ import { fromShare } from "../../utils/link-share";
 import {
   generatePlacmenetCellFromSetting,
   generateConnectionFromSetting,
-  createInferenceArea
+  createInfluenceArea
 } from "../../utils/style-utils";
 import { PlacementRender, LineAttributes } from "../../types/PlacementRender";
 import { VisualSettings } from "../../types/VisualSettings";
@@ -17,7 +17,7 @@ export default class Placement extends VuexModule {
   _cellPlacement: CellPlacement[] = [];
   _renderedPlacement: PlacementRender[] = [];
   _renderedConnection: LineAttributes[] = [];
-  _renderedInferenceArea: CSSStyleDeclaration[] = [];
+  _renderedInfluenceArea: CSSStyleDeclaration[] = [];
 
   get cellPlacement() {
     return this._cellPlacement;
@@ -31,8 +31,8 @@ export default class Placement extends VuexModule {
     return this._renderedConnection;
   }
 
-  get renderedInferenceArea() {
-    return this._renderedInferenceArea;
+  get renderedInfluenceArea() {
+    return this._renderedInfluenceArea;
   }
 
   get areaElementSize(): Record<string, number> {
@@ -44,8 +44,8 @@ export default class Placement extends VuexModule {
   }
 
   @Mutation
-  setRenderedInferenceArea(data: CSSStyleDeclaration[]) {
-    this._renderedInferenceArea = data;
+  setRenderedInfluenceArea(data: CSSStyleDeclaration[]) {
+    this._renderedInfluenceArea = data;
   }
 
   @Mutation
@@ -109,7 +109,7 @@ export default class Placement extends VuexModule {
     filteredPlacement = filteredPlacement.filter(f => this.context.getters.alwaysShowBorder[f.text]);
 
     this.context.commit(
-      "setRenderedInferenceArea",
+      "setRenderedInfluenceArea",
       filteredPlacement
         .map(f => f as CellElement)
         .map(cell => {
@@ -118,7 +118,7 @@ export default class Placement extends VuexModule {
           const areaOpacity = this.context.getters.areaOpacity;
           const areaBorderOpacity = this.context.getters.areaBorderOpacity;
           const color = this.context.getters.placementColor[cell.color];
-          return createInferenceArea(cell, color, areaOpacity[cell.text], areaBorderOpacity[cell.text], area, size);
+          return createInfluenceArea(cell, color, areaOpacity[cell.text], areaBorderOpacity[cell.text], area, size);
         })
     );
   }

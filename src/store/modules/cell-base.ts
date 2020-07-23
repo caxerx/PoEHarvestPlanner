@@ -8,6 +8,7 @@ export default class CellBase extends VuexModule {
   _row = 42;
   _size = 20;
 
+  _textColor = ["purple", "yellow", "blue", "grey", "pink", "green"];
   _placementColor = ["156, 39, 176", "245, 127, 23", "33, 150, 243"];
   _connectionColor = ["#EA6AFF", "#FF9B43", "#56B4FF"];
 
@@ -59,5 +60,9 @@ export default class CellBase extends VuexModule {
   }
   get connectionColor() {
     return this._connectionColor;
+  }
+
+  get textColor() {
+    return this._textColor;
   }
 }

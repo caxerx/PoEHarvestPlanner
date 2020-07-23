@@ -59,7 +59,7 @@ export default Vue.extend({
 
 <style scoped>
 .placement-text {
-  position: fixed;
+  position: absolute;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 

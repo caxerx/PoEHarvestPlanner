@@ -402,7 +402,7 @@ import {
   calculateAreaSize
 } from "@/utils/cell-calc";
 import { isSeed } from "@/utils/placement-util";
-import { InferenceArea } from "./types/CellPlacement";
+import { InfluenceArea } from "./types/CellPlacement";
 import Layout from "@/layout/harvest-layout.json";
 import { getShare, fromShare } from "./utils/link-share";
 import Axios from "axios";
@@ -965,7 +965,7 @@ export default Vue.extend({
       this.cellPlacement.splice(this.cellPlacement.indexOf(c), 1);
       this.hoverLinkItem(null);
     },
-    convertPlacementToInference(placement: CellPlacement | null | undefined): InferenceArea | null {
+    convertPlacementToInfluence(placement: CellPlacement | null | undefined): InfluenceArea | null {
       if (!placement) {
         return null;
       }
@@ -1111,48 +1111,48 @@ export default Vue.extend({
         .map(c => this.findPlacement(c[0], c[1]))
         .filter(c => !!c) as CellPlacement[]).filter(c => !!c && c.text != "connection");
     },
-    inferenceAreas() {
-      const inference: InferenceArea[] = [];
+    influenceAreas() {
+      const influence: InfluenceArea[] = [];
 
-      const placementHover = this.convertPlacementToInference(
+      const placementHover = this.convertPlacementToInfluence(
         this.findPlacement(this.hoveringCell[0], this.hoveringCell[1])
       );
       if (placementHover) {
-        inference.push(placementHover);
+        influence.push(placementHover);
       }
 
-      const placementSelection = this.convertPlacementToInference(
+      const placementSelection = this.convertPlacementToInfluence(
         this.findPlacement(this.selection[0]?.[0], this.selection[0]?.[1])
       );
       if (placementSelection) {
-        inference.push(placementSelection);
+        influence.push(placementSelection);
       }
 
       if (this.settings.pylon.alwaysShowArea) {
-        inference.push(
+        influence.push(
           ...(this.cellPlacement
             .filter(p => p.text == "P")
-            .map(p => this.convertPlacementToInference(p))
-            .filter(p => p != null) as InferenceArea[])
+            .map(p => this.convertPlacementToInfluence(p))
+            .filter(p => p != null) as InfluenceArea[])
         );
       }
       if (this.settings.collector.alwaysShowArea) {
-        inference.push(
+        influence.push(
           ...(this.cellPlacement
             .filter(p => p.text == "C")
-            .map(p => this.convertPlacementToInference(p))
-            .filter(p => p != null) as InferenceArea[])
+            .map(p => this.convertPlacementToInfluence(p))
+            .filter(p => p != null) as InfluenceArea[])
         );
       }
       if (this.settings.disperser.alwaysShowArea) {
-        inference.push(
+        influence.push(
           ...(this.cellPlacement
             .filter(p => p.text == "D")
-            .map(p => this.convertPlacementToInference(p))
-            .filter(p => p != null) as InferenceArea[])
+            .map(p => this.convertPlacementToInfluence(p))
+            .filter(p => p != null) as InfluenceArea[])
         );
       }
-      return inference;
+      return influence;
     },
     pylonConnections(): CellPlacement[] {
       let connections: CellPlacement[] = [];

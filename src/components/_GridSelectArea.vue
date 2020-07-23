@@ -3,10 +3,10 @@
     <div :style="selectionStyle()" class="selection" v-if="selection[0]"></div>
     <div :style="hoveringStyle()" class="hovering" v-if="linkHovering[0]"></div>
     <div
-      v-for="(ia, i) in inferenceArea"
+      v-for="(ia, i) in influenceArea"
       :key="`infa-${i}`"
-      :style="inferenceAreaStyle(ia)"
-      class="inference-area"
+      :style="influenceAreaStyle(ia)"
+      class="influence-area"
     ></div>
   </div>
 </template>
@@ -14,7 +14,7 @@
 import Vue from "vue";
 import { findAreaTopLeft } from "@/utils/cell-calc";
 import { calculateCellPosition, calculateAreaPixelSize } from "@/utils/style-utils";
-import { InferenceArea } from "../types/CellPlacement";
+import { InfluenceArea } from "../types/CellPlacement";
 export default Vue.extend({
   name: "GridSelectArea",
   props: {
@@ -25,8 +25,8 @@ export default Vue.extend({
     linkHovering: {
       default: (): number[] => []
     },
-    inferenceArea: {
-      default: (): InferenceArea[] => []
+    influenceArea: {
+      default: (): InfluenceArea[] => []
     }
   },
   data() {
@@ -36,7 +36,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    inferenceAreaStyle(ia: InferenceArea) {
+    influenceAreaStyle(ia: InfluenceArea) {
       const [xPos, yPos] = calculateCellPosition(ia.topLeft, this.size);
       const [height, width] = calculateAreaPixelSize(
         [ia.topLeft, [ia.topLeft[0] + ia.size, ia.topLeft[1] + ia.size]],
@@ -92,7 +92,7 @@ export default Vue.extend({
   position: absolute;
 }
 
-.inference-area {
+.influence-area {
   z-index: 6;
   pointer-events: none;
   position: absolute;

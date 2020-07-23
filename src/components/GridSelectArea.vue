@@ -1,9 +1,9 @@
 <template>
   <div>
     <div :style="renderedSelectionArea" class="area selection" v-if="renderedSelectionArea"></div>
-    <div :style="renderedHoveringInferenceArea" class="area inference" v-if="renderedHoveringInferenceArea"></div>
-    <div :style="renderedSelectingInferenceArea" class="area inference" v-if="renderedSelectingInferenceArea"></div>
-    <div v-for="(a, i) in renderedInferenceArea" :key="i" :style="a" class="area inference"></div>
+    <div :style="renderedHoveringInfluenceArea" class="area influence" v-if="renderedHoveringInfluenceArea"></div>
+    <div :style="renderedSelectingInfluenceArea" class="area influence" v-if="renderedSelectingInfluenceArea"></div>
+    <div v-for="(a, i) in renderedInfluenceArea" :key="i" :style="a" class="area influence"></div>
   </div>
 </template>
 <script lang="ts">
@@ -14,14 +14,14 @@ export default Vue.extend({
     renderedSelectionArea(): CSSStyleDeclaration {
       return this.$store.getters.renderedSelectionArea;
     },
-    renderedHoveringInferenceArea(): CSSStyleDeclaration {
-      return this.$store.getters.renderedHoveringInferenceArea;
+    renderedHoveringInfluenceArea(): CSSStyleDeclaration {
+      return this.$store.getters.renderedHoveringInfluenceArea;
     },
-    renderedSelectingInferenceArea(): CSSStyleDeclaration {
-      return this.$store.getters.renderedSelectingInferenceArea;
+    renderedSelectingInfluenceArea(): CSSStyleDeclaration {
+      return this.$store.getters.renderedSelectingInfluenceArea;
     },
-    renderedInferenceArea(): CSSStyleDeclaration[] {
-      return this.$store.getters.renderedInferenceArea;
+    renderedInfluenceArea(): CSSStyleDeclaration[] {
+      return this.$store.getters.renderedInfluenceArea;
     }
   }
 });
@@ -33,7 +33,7 @@ export default Vue.extend({
   box-shadow: 0px 0px 4px red;
 }
 
-.inference {
+.influence {
   z-index: 8;
 }
 

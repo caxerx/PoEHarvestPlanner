@@ -1,7 +1,7 @@
 import { CellPlacement } from "@/types/CellPlacement";
 import { CellColor, CellPosition } from "../types/CellBase";
 import { CellElement } from "../types/CellPlacement";
-import { isOutOfRange } from "./cell-calc";
+import { isOutOfRange, generateSelectedCell } from "./cell-calc";
 
 /**
  * @deprecated NO!
@@ -12,6 +12,30 @@ export function isSeed(p: CellPlacement) {
 
 export function isConnectable(p: CellPlacement) {
   return !["connection", "1", "2", "3", "4", "E1", "E2", "E3"].includes(`${p.text}`);
+}
+
+export function getPlacementTextColor(p: CellPlacement, textColor: string[]) {
+  return textColor[p.color];
+}
+
+export function getPlacementFullName(p: CellPlacement) {
+  const color = ["Wild", "Vivid", "Primal"];
+  const normal = {
+    connection: "Connection",
+    "1": "Tier 1 Seed",
+    "2": "Tier 2 Seed",
+    "3": "Tier 3 Seed",
+    "4": "Tier 4 Seed",
+    S: "Storage",
+    S2: "Advance Storage",
+    D: "Disperser",
+    C: "Collector",
+    P: "Pylon",
+    H: "Horticrafting Station"
+  };
+  if (normal[p.text]) {
+    return `${color[p.color]} ${normal[p.text]}`;
+  }
 }
 
 export function getColor(p: CellColor, color: string | number | null | undefined) {
@@ -95,4 +119,15 @@ export function findConnectablePlacement(placement: CellPlacement[], element: Ce
   }
   foundPlacement = foundPlacement.filter(p => !isOutOfRange([p.x, p.y], [element.x, element.y], 4));
   return foundPlacement;
+}
+
+export function findPlacementInArea(placement: CellPlacement[], p1: CellPosition, p2: CellPosition) {
+  const filteredPlacement = placement.filter(p => p.text != "connection").map(p => p as CellElement);
+  return generateSelectedCell([
+    [p1.x, p1.y],
+    [p2.x, p2.y]
+  ])
+    .map(cell => findPlacement(filteredPlacement, cell[0], cell[1]))
+    .filter(cell => cell)
+    .map(cell => cell as CellElement);
 }
