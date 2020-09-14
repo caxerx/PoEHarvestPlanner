@@ -1,4 +1,6 @@
 # Harvest Planner
+### Harvest is not going to core mechanic. The future development will depend on how GGG integrate harvest into core game.
+
 Try it out on https://harvest.iw.gy/
 
 # How to use
