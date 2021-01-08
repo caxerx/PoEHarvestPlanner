@@ -1,5 +1,5 @@
 # Harvest Planner
-### Harvest is not going to core mechanic. The future development will depend on how GGG integrate harvest into core game.
+### GGG confirmed that you do not need to manage the Sacred Grove anymore.
 
 Try it out on https://harvest.iw.gy/
 
